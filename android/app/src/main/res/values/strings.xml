@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Imary</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="diary_description">Diary image</string>
+    <string name="camera_description"> image</string>Camera
+</resources>

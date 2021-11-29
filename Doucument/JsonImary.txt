@@ -1,0 +1,59 @@
+
+	"data" :  {
+				"uiid" : 
+				"password" : "444"
+				{
+				 
+					"diary":[
+								  {
+									updateDate: 'Today 2021/07/13 （火）',
+									diary: [
+									  {
+										content: '日本の祝日・休日カレンダ',
+										color: '#BA55D3',
+										favorite: 'false',
+										updateTime: '08:01',
+									  },
+									  {
+										content:
+										  '令和3年（2021年）に限り、『海の日』は7月22日に、『スポーツの日』は7月23日に、『山の日』は8月8日になります。8月9日は休日となります',
+										color: '#FFB6C1',
+										favorite: 'false',
+										image: require('../../assets/image3.png'),
+										updateTime: '08:01',
+									  },
+									],
+								  },
+								  {
+									updateDate: '2021/07/20（火）',
+									diary: [
+									  {
+										content: 'AaVVcccccccccccccccccccccccccccccccc',
+										color: '#9370DB',
+										favorite: 'false',
+										updateTime: '18:30',
+									  },
+									  {
+										content:
+										  '大人になったことを自覚し、みずから生き抜こうとする青年を祝いはげます」趣旨の国民の祝日。1948年（昭和23）制定。従来は1月15日であったが、2000年から1月の第2月曜日となる',
+										color: '#BA55D3',
+										favorite: 'false',
+										updateTime: '08:30',
+									  },
+									],
+								  },
+							]
+				}
+			}
+	
+	1. uiid : uniqueId phone
+	
+	2. password: cho truong hop log in bang hinh ve(cai nay e research qua)
+	https://www.youtube.com/watch?v=g8LXuzDQjbI
+	
+	3.tilte : dự đinh sẽ la mã tự gen
+	
+	4. image, video hiện tại chưa co research la sẽ lưu thê nào.
+	imgae va video thi reserach ra ve upload image va video(can tim hieu thu them)
+	link tham khao
+	https://www.youtube.com/watch?v=6w4bx76Mgoc&fbclid=IwAR1-A4D8WDkiSyo1sgagY10UVc7kEvep8zFXil7JgbYW_FVEFyekpt1fSpg
