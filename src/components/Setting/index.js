@@ -8,6 +8,7 @@ import {
   StatusBar,
   TouchableOpacity,
   Dimensions,
+  Linking,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PasswordGesture from 'react-native-gesture-password';
@@ -21,6 +22,10 @@ import {
 } from '../../realm/ExcuteData';
 import {getFullDay} from '../../realm/Common';
 import ToggleSwitch from 'toggle-switch-react-native';
+import ImagePicker from 'react-native-image-crop-picker';
+import DefaultPreference from 'react-native-default-preference';
+
+const appGroupIdentifier = 'group.com.imary';
 
 const BackIcon = () => <Ionicons name="arrow-back" size={25} />;
 
@@ -53,8 +58,18 @@ export default function Setting({navigation}) {
   const [checked, setChecked] = React.useState(false);
   const [startDay, setStartDay] = React.useState(getFullDay(0));
   const [modalVis, setModalVis] = React.useState(false);
+  const [modalBGVis, setModalBGVis] = React.useState(false);
   const [message, setMessage] = React.useState('パターンを入力してください');
   const [status, setStatus] = React.useState('normal');
+  const [backgroundDefault, setBackgroundDefault] = React.useState('画像を選択');
+  const [resourcePath, setResourcePath] = React.useState([]);
+  const [diaryData, setDiaryData] = React.useState(null);
+
+  const backgroundOption = [
+    {index: 0, opt: '画像を選択'},
+    {index: 1, opt: '最新の画像'},
+    {index: 2, opt: '設定しない'}
+  ];
 
   const days = [
     {day: 0, fullDay: '日曜日'},
@@ -119,8 +134,26 @@ export default function Setting({navigation}) {
   };
 
   useEffect(() => {
+    DefaultPreference.setName(appGroupIdentifier);
     const ac = new AbortController();
     setPass('');
+    DefaultPreference.get('widgetBackgroundOpt').then(opt => {
+      console.log(opt);
+      switch (opt) {
+        default:
+          setBackgroundDefault(backgroundOption[0].opt);
+          break;
+        case '0':
+          setBackgroundDefault(backgroundOption[0].opt);
+          break;
+        case '1':
+          setBackgroundDefault(backgroundOption[1].opt);
+          break;
+        case '2':
+          setBackgroundDefault(backgroundOption[2].opt);
+          break;
+      }
+    });
     Realm.open({
       schema: [Diary_Schema, Init_Schema], // predefined schema
       schemaVersion: 5,
@@ -135,6 +168,8 @@ export default function Setting({navigation}) {
           }
           setStartDay(getFullDay(data[0].startDay));
         }
+        const diary = realm.objects('diaryData').sorted('_id', true);
+        setDiaryData(diary);
         return () => {
           realm.close();
         };
@@ -152,6 +187,94 @@ export default function Setting({navigation}) {
     setModalVis(false);
     setStartDay(item.fullDay);
     updateStartDay(item.day);
+  };
+
+  const setModalBG = item => {
+    let count = 0;
+    if (item.index === 1) {
+      pickPicture(item);
+      DefaultPreference.set('widgetBackgroundOpt', '1');
+    } else if (item.index === 0) {
+      if (diaryData !== null && diaryData.length > 0) {
+        for ( let i = 0; i < diaryData.length; i++) {
+          if (diaryData[i].imageSrc !== '') {
+            let imageSrc = JSON.parse(diaryData[i].imageSrc);
+            imageSrc = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
+            if (imageSrc.length > 0) {
+              DefaultPreference.set('backgroundImage', imageSrc[0].uri);
+              count += 1;
+              break;
+            }
+          }
+        }
+        if (count === 0) {
+          DefaultPreference.set('backgroundImage', '');
+        }
+      } else {
+        DefaultPreference.set('backgroundImage', '');
+      }
+      DefaultPreference.set('widgetBackgroundOpt', '0');
+      setModalBGVis(false);
+      setBackgroundDefault(item.opt);
+    } else {
+      setModalBGVis(false);
+      DefaultPreference.set('backgroundImage', '');
+      DefaultPreference.set('widgetBackgroundOpt', '2');
+      setBackgroundDefault(item.opt);
+    }
+  }
+
+  const pickPicture = async (item) => {
+    try {
+      const result = await ImagePicker.openPicker({
+        height: 300,
+        width: 400,
+        cropping: true,
+        includeBase64: true,
+        multiple: true,
+        compressImageMaxHeight: 1500,
+        compressImageMaxWidth: 1500,
+        compressImageQuality: 0.8,
+        maxFiles: 1,
+      }).then(image => {
+        let arr = [];
+        image.forEach(e => {
+          arr.push({
+            uri: `data:${e.mime};base64,` + e.data,
+            width: e.width,
+            height: e.height,
+          });
+        });
+        
+        setModalBGVis(false);
+        setBackgroundDefault(item.opt);
+        DefaultPreference.set('backgroundImage', arr[0].uri);
+      });
+    } catch (error) {
+      console.log('Error:', error);
+      if (error.message.includes('User did not grant library permission')) {
+        alertRequestPermission('library');
+      }
+    }
+  };
+
+  const alertRequestPermission = (service) => {
+    const libraryString = `Imaryにはまだ「写真アルバム」アクセス権がありません。
+    写真を使用するには、写真アルバムへのアクセスを許可してください。`
+    const cameraString = `Imaryにはまだ「カメラ」アクセス権がありません。
+    写真とビデオ撮影機能を使用するには、カメラへのアクセスを許可してください。`
+    Alert.alert('', service === 'library' ? libraryString : cameraString, [
+      {
+        text: 'キャンセル',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'default',
+      },
+      {
+        text: 'OK',
+        onPress: () => Linking.openSettings(),
+        style: 'default',
+      },
+    ]);
   };
 
   const itemStartDay = () => (
@@ -178,6 +301,39 @@ export default function Setting({navigation}) {
                 onPress={() => setModalDay(item)}>
                 <View style={{alignItems: 'center'}}>
                   <Text>{item.fullDay}</Text>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </Modal>
+    </View>
+  );
+
+  const itemBackground = () => (
+    <View>
+      <TouchableOpacity onPress={() => setModalBGVis(true)}>
+        <Text style={{fontSize: 16}}>{backgroundDefault}</Text>
+      </TouchableOpacity>
+      <Modal
+        transparent={true}
+        isVisible={modalBGVis}
+        animationIn="fadeIn"
+        animationOut="fadeOut"
+        animationInTiming={300}
+        animationOutTiming={300}
+        backdropTransitionOutTiming={0}
+        onRequestClose={() => setModalBGVis(false)}
+        onBackdropPress={() => setModalBGVis(false)}>
+        <View style={styles.moldalContainerBG}>
+          {backgroundOption.map((item, index) => {
+            return (
+              <TouchableOpacity
+                key={index}
+                style={{margin: 18}}
+                onPress={() => setModalBG(item)}>
+                <View style={{alignItems: 'center'}}>
+                  <Text>{item.opt}</Text>
                 </View>
               </TouchableOpacity>
             );
@@ -258,6 +414,20 @@ export default function Setting({navigation}) {
             </View>
             {itemStartDay()}
           </View>
+          <View style={styles.bodyContainer}>
+            <View style={{width: '14%'}}>
+              <Image
+                source={require('../../assets/background_icon.png')}
+                style={{width: 35, height: 35}}
+              />
+            </View>
+            <View style={{width: '65%'}}>
+              <Text style={{fontSize: 16, fontFamily: 'Yu Gothic'}}>
+                ウィジェット表示画像
+              </Text>
+            </View>
+            {itemBackground()}
+          </View>
         </View>
       )}
     </SafeAreaView>
@@ -309,6 +479,15 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignSelf: 'center',
     height: '40%',
+    width: '70%',
+  },
+  moldalContainerBG: {
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 20,
+    alignSelf: 'center',
+    height: '30%',
     width: '70%',
   },
 });

@@ -1,5 +1,8 @@
 import Realm from 'realm';
 import {getCurrentDate, getCurrentTime, getDay} from '../../realm/Common';
+import DefaultPreference from 'react-native-default-preference';
+
+const appGroupIdentifier = 'group.com.imary';
 
 export const Diary_Schema = {
   name: 'diaryData',
@@ -52,7 +55,7 @@ export const saveData = async (
   let time = getCurrentTime(true);
   let id = getCurrentDate(false) + getCurrentTime(false);
   let imageSource =
-    imageSrc !== '' && imageSrc.uri !== null ? JSON.stringify(imageSrc) : '';
+    imageSrc !== '' ? JSON.stringify(imageSrc) : '';
   let tagText = '';
   tagArr.forEach(item => {
     tagText = tagText.concat(item);
@@ -84,6 +87,22 @@ export const saveData = async (
     realm.create('initData', dataInit, true);
     realm.create('diaryData', data);
   });
+  DefaultPreference.setName(appGroupIdentifier);
+
+  const year = data._id.substring(0, 4);
+  const month = data._id.substring(4, 6);
+  const day = data._id.substring(6, 8);
+  const hour = data._id.substring(8, 10);
+  const minute = data._id.substring(10, 12);
+  const date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute;
+  let image = data.imageSrc !== '' ? JSON.parse(data.imageSrc) : [];
+  image = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
+  DefaultPreference.get('widgetBackgroundOpt').then(opt => {
+    if (image.length > 0 && (opt === '0' || opt === undefined)) {
+      DefaultPreference.set('backgroundImage', image[0].uri);
+    }
+  })
+  DefaultPreference.set('date', date);
 };
 saveData().catch(error => {
   console.log(`An error occurred: ${error}`);
@@ -166,7 +185,6 @@ export const deleteById = async id => {
 };
 
 export const updateListDate = async id => {
-  console.log('zxczxc')
   const realm = await Realm.open({
     schema: [Diary_Schema, Init_Schema],
     schemaVersion: 5,
@@ -185,7 +203,6 @@ export const updateListDate = async id => {
     if (index > -1) {
       listDates.splice(index, 1);
     }
-    console.log(listDates);
     var dataInit = {
       _id: '1',
       listDate: listDates,

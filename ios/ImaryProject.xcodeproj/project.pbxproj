@@ -24,11 +24,11 @@
 		1A733D5F26E4A8860027EB34 /* yugothic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1A733D5E26E4A8860027EB34 /* yugothic.ttf */; };
 		1A74CE1026C15C9600DB26D5 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A74CE0F26C15C9600DB26D5 /* WidgetKit.framework */; };
 		1A74CE1226C15C9600DB26D5 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1A74CE1126C15C9600DB26D5 /* SwiftUI.framework */; };
-		1A74CE1526C15C9600DB26D5 /* WidgetWriteDiary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A74CE1426C15C9600DB26D5 /* WidgetWriteDiary.swift */; };
 		1A74CE1826C15C9E00DB26D5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A74CE1726C15C9E00DB26D5 /* Assets.xcassets */; };
 		1A74CE1A26C15C9E00DB26D5 /* WidgetWriteDiary.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1A74CE1626C15C9600DB26D5 /* WidgetWriteDiary.intentdefinition */; };
 		1A74CE1E26C15C9E00DB26D5 /* WidgetWriteDiaryExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 1A74CE0E26C15C9600DB26D5 /* WidgetWriteDiaryExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		1A74CECC26C165CF00DB26D5 /* WidgetWriteDiary.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 1A74CE1626C15C9600DB26D5 /* WidgetWriteDiary.intentdefinition */; settings = {ATTRIBUTES = (no_codegen, ); }; };
+		1A929DE1274760A500AA99CA /* WidgetWriteDiary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A74CE1426C15C9600DB26D5 /* WidgetWriteDiary.swift */; };
 		1AB1646B26ABE06F008AADB7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AB1646A26ABE06F008AADB7 /* GoogleService-Info.plist */; };
 		1AC6EFF826F8EB2A00F904BA /* yugothib.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1AC6EFF726F8EB2A00F904BA /* yugothib.ttf */; };
 		1BB4BC0FD2C251478C04B7CC /* libPods-ImaryProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDAA723605E09F9F2D446152 /* libPods-ImaryProject.a */; };
@@ -101,6 +101,12 @@
 		1A74CE1626C15C9600DB26D5 /* WidgetWriteDiary.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WidgetWriteDiary.intentdefinition; sourceTree = "<group>"; };
 		1A74CE1726C15C9E00DB26D5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1A74CE1926C15C9E00DB26D5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A929EE52759BF3600AA99CA /* ImaryProject.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = ImaryProject.entitlements; path = ImaryProject/ImaryProject.entitlements; sourceTree = "<group>"; };
+		1A929EE62759BF9500AA99CA /* WidgetWriteDiaryExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetWriteDiaryExtension.entitlements; sourceTree = "<group>"; };
+		1A929EFB2759BFC300AA99CA /* WidgetCameraDiaryExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WidgetCameraDiaryExtension.entitlements; sourceTree = "<group>"; };
+		1A92A08F2760597100AA99CA /* libreact-native-widgetkit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-widgetkit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A92A0EB27605E2D00AA99CA /* libreact-native-widgetkit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-widgetkit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A92A1E32761CFA100AA99CA /* libreact-native-widget-bridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-widget-bridge.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB1646A26ABE06F008AADB7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ImaryProject/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1AC6EFF726F8EB2A00F904BA /* yugothib.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = yugothib.ttf; sourceTree = "<group>"; };
 		2A9D3556CE6B8BC4E949A962 /* Pods-ImaryProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImaryProject.release.xcconfig"; path = "Target Support Files/Pods-ImaryProject/Pods-ImaryProject.release.xcconfig"; sourceTree = "<group>"; };
@@ -174,6 +180,7 @@
 		13B07FAE1A68108700A75B9A /* ImaryProject */ = {
 			isa = PBXGroup;
 			children = (
+				1A929EE52759BF3600AA99CA /* ImaryProject.entitlements */,
 				1AB1646A26ABE06F008AADB7 /* GoogleService-Info.plist */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -219,6 +226,9 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1A92A1E32761CFA100AA99CA /* libreact-native-widget-bridge.a */,
+				1A92A0EB27605E2D00AA99CA /* libreact-native-widgetkit.a */,
+				1A92A08F2760597100AA99CA /* libreact-native-widgetkit.a */,
 				1A26CE99272531290095C520 /* libRNShare.a */,
 				1A26CE97272530E00095C520 /* MessageUI.framework */,
 				1A26CE95272530C10095C520 /* Social.framework */,
@@ -241,6 +251,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				1A929EFB2759BFC300AA99CA /* WidgetCameraDiaryExtension.entitlements */,
+				1A929EE62759BF9500AA99CA /* WidgetWriteDiaryExtension.entitlements */,
 				1A733D5326E4A01D0027EB34 /* Resources */,
 				13B07FAE1A68108700A75B9A /* ImaryProject */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
@@ -627,7 +639,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1A74CE1A26C15C9E00DB26D5 /* WidgetWriteDiary.intentdefinition in Sources */,
-				1A74CE1526C15C9600DB26D5 /* WidgetWriteDiary.swift in Sources */,
+				1A929DE1274760A500AA99CA /* WidgetWriteDiary.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,7 +668,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D649E25AA24F9B85E4DBA1D6 /* Pods-ImaryProject-ImaryProjectTests.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -684,7 +695,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AA22C79FA8EAF3F20276735B /* Pods-ImaryProject-ImaryProjectTests.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = ImaryProjectTests/Info.plist;
@@ -712,16 +722,19 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = ImaryProject/ImaryProject.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = TM56PYA695;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ImaryProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -729,7 +742,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject;
 				PRODUCT_NAME = ImaryProject;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Kenichiro Naritomi";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -744,15 +757,18 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CODE_SIGN_ENTITLEMENTS = ImaryProject/ImaryProject.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = TM56PYA695;
 				INFOPLIST_FILE = ImaryProject/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -760,7 +776,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject;
 				PRODUCT_NAME = ImaryProject;
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Kenichiro Naritomi";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -778,8 +794,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = WidgetCameraDiaryExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = TM56PYA695;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -796,11 +814,12 @@
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.2/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
+				MARKETING_VERSION = 1.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetCameraDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = WidgetCameraDiaryExtension;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -820,9 +839,11 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = WidgetCameraDiaryExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = TM56PYA695;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -839,10 +860,11 @@
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.2/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
+				MARKETING_VERSION = 1.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetCameraDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = WidgetCameraDiaryExtension;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -861,8 +883,10 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = WidgetWriteDiaryExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = TM56PYA695;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -878,11 +902,12 @@
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.2/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
+				MARKETING_VERSION = 1.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetWriteDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = WidgetWriteDiaryExtension;
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -902,9 +927,11 @@
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_ENTITLEMENTS = WidgetWriteDiaryExtension.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = TM56PYA695;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -920,10 +947,11 @@
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.2/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
+				MARKETING_VERSION = 1.1;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetWriteDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = WidgetWriteDiaryExtension;
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -1071,7 +1099,7 @@
 				00E356F71AD99517003FC87E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "ImaryProject" */ = {
 			isa = XCConfigurationList;
@@ -1080,7 +1108,7 @@
 				13B07F951A680F5B00A75B9A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		1A07A6E726CAAF1D00C4F1A6 /* Build configuration list for PBXNativeTarget "WidgetCameraDiaryExtension" */ = {
 			isa = XCConfigurationList;
@@ -1089,7 +1117,7 @@
 				1A07A6E626CAAF1D00C4F1A6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		1A74CE2226C15C9E00DB26D5 /* Build configuration list for PBXNativeTarget "WidgetWriteDiaryExtension" */ = {
 			isa = XCConfigurationList;
@@ -1098,7 +1126,7 @@
 				1A74CE2126C15C9E00DB26D5 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "ImaryProject" */ = {
 			isa = XCConfigurationList;
@@ -1107,7 +1135,7 @@
 				83CBBA211A601CBA00E9B192 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

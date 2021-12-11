@@ -17,6 +17,7 @@ target 'ImaryProject' do
 
   pod 'react-native-cameraroll', :path => '../node_modules/@react-native-community/cameraroll'
   pod 'rn-fetch-blob', :path => '../node_modules/rn-fetch-blob'
+  pod 'FSCalendar'
 
   target 'ImaryProjectTests' do
     inherit! :complete

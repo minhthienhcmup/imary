@@ -41,7 +41,9 @@ import ImageView from 'react-native-image-viewing';
 import {set} from 'react-native-reanimated';
 import RNExitApp from 'react-native-exit-app';
 import { getStatusBarHeight } from 'react-native-status-bar-height';
+import DefaultPreference from 'react-native-default-preference'
 const MojiJS = require('mojijs');
+const appGroupIdentifier = 'group.com.imary';
 
 export default function WriteDiary({navigation, route}) {
   const [content, setContent] = useState('');
@@ -81,6 +83,7 @@ export default function WriteDiary({navigation, route}) {
   let bubbleColor6 = '#F7CFFC';
 
   useEffect(() => {
+    DefaultPreference.setName('group.com.imary');
     LogBox.ignoreAllLogs();
     const ac = new AbortController();
     const interval = setInterval(() => {
@@ -103,7 +106,12 @@ export default function WriteDiary({navigation, route}) {
       const {code} = route.params;
       if (code === '1') {
         checkCamera();
-      } else {
+        cameraPicture();
+      } else if (code === '2') {
+        checkCamera();
+        cameraVideo();
+      }
+      else {
         setModalVis(false);
       }
     }
@@ -175,6 +183,7 @@ export default function WriteDiary({navigation, route}) {
         await saveVideo(video.path);
       });
     }
+    
     setResourcePath([]);
     setContent('');
     setColor(colorDefault);

@@ -68,6 +68,7 @@ struct WidgetCameraDiary: Widget {
         }
         .configurationDisplayName("Camera Widget")
         .description("This is a camera widget.")
+        .supportedFamilies([])
     }
 }
 

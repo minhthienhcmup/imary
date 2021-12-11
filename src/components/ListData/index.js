@@ -32,10 +32,6 @@ export const ViewDataList = props => {
     };
   };
 
-  const resfesh = () => {
-    console.log('1213123123213')
-  }
-
   return (
     <SectionList
       showsHorizontalScrollIndicator={false}

@@ -12,10 +12,15 @@ import {
   StatusBar,
   Linking,
 } from 'react-native';
+import SharedGroupPreferences from 'react-native-shared-group-preferences'
+import DefaultPreference from 'react-native-default-preference'
+
+const appGroupIdentifier = 'group.com.imary';
 
 const config = {
   screens: {
     Write: 'Write/:code',
+    Search: 'Search/:widget'
   },
 };
 
@@ -30,6 +35,7 @@ const App = () => {
   const [message, setMessage] = useState('パターンを入力してください');
   const [status, setStatus] = useState('normal');
   const [link, setLink] = useState(null);
+  const [diaryData, setDiaryData] = useState(null);
 
   const onEnd = password => {
     if (password == initData[0].password) {
@@ -47,9 +53,11 @@ const App = () => {
     setStatus('normal');
   };
 
-  useEffect(async () => {
-    const url = await Linking.getInitialURL();
-    await setLink(url);
+  useEffect(() => {
+    DefaultPreference.setName(appGroupIdentifier);
+    Linking.getInitialURL().then(url => {
+      setLink(url);
+    });
     const ac = new AbortController();
     LogBox.ignoreLogs(['Error: ...']); // Ignore log notification by message
     Realm.open({
@@ -60,6 +68,23 @@ const App = () => {
         const data = realm.objects('initData');
         if (data !== null && data.length > 0) {
           setInitData(data);
+        }
+        const diary = realm.objects('diaryData').sorted('_id', true);
+        if (diary !== null && diary.length > 0) {
+          const year = diary[0]._id.substring(0, 4);
+          const month = diary[0]._id.substring(4, 6);
+          const day = diary[0]._id.substring(6, 8);
+          const hour = diary[0]._id.substring(8, 10);
+          const minute = diary[0]._id.substring(10, 12);
+          const date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute;
+          let image = diary.imageSrc !== '' ? JSON.parse(diary.imageSrc) : [];
+          image = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
+          DefaultPreference.get('widgetBackgroundOpt').then(opt => {
+            if (image.length > 0 && (opt === '0' | opt === undefined)) {
+              DefaultPreference.set('backgroundImage', image[0].uri);
+            }
+          });
+          DefaultPreference.set('date', date);
         }
         return () => {
           realm.close();
@@ -73,11 +98,11 @@ const App = () => {
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      {verified === false &&
+      {(verified === false &&
       initData.length > 0 &&
       initData[0].usePass === true &&
       initData[0].password.trim() !== '' &&
-      link == null ? (
+      (link == null || link == 'imary://Search/0')) ? (
         <View style={styles.container}>
           {/* <MyStatusBar backgroundColor="#292B38" barStyle="dark-content" />  */}
           <PasswordGesture

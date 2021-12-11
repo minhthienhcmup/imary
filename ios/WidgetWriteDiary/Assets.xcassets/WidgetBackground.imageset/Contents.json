@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "background_widget.png",
+      "filename" : "WidgetBackground.png",
       "idiom" : "universal",
       "scale" : "1x"
     },

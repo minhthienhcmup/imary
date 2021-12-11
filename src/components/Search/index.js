@@ -15,6 +15,7 @@ import {
   LogBox,
   SectionList,
   Animated,
+  BackHandler
 } from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {Diary_Schema, Init_Schema} from '../../realm/ExcuteData';
@@ -240,8 +241,18 @@ export default function Search({route, navigation}) {
       const ac = new AbortController();
       preparedData();
       LogBox.ignoreAllLogs();
+      const backAction = () => {
+        if (route.params.widget) {
+          BackHandler.exitApp();
+          RNExitApp.exitApp();
+        }
+        return false;
+      };
+  
+      BackHandler.addEventListener('hardwareBackPress', backAction);
       return () => {
         ac.abort();
+        BackHandler.removeEventListener('hardwareBackPress', backAction);
       };
     }, [route.params,textDiary,
       textTag,
@@ -250,16 +261,7 @@ export default function Search({route, navigation}) {
   );
 
   // useEffect(() => {
-  //   const ac = new AbortController();
-  //   //setLoading(true);
-  //   //startLoading();
-  //   //setLoading(false);
-  //   preparedData();
-  //   //setLoading(true);
-  //   LogBox.ignoreAllLogs();
-  //   return () => {
-  //     ac.abort();
-  //   };
+    
   // }, [route.params]);
 
   return (

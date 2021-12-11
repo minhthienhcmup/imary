@@ -17,13 +17,36 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-3205609387650984~5010170677</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>twitter</string>
+		<string>instagram</string>
+		<string>instagram-stories</string>
+		<string>fb</string>
+		<string>fbapi</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+		<string>fb-stories</string>
+		<string>fbapi20130214</string>
+		<string>fbapi20130410</string>
+		<string>fbapi20130702</string>
+		<string>fbapi20131010</string>
+		<string>fbapi20131219</string>
+		<string>fbapi20140410</string>
+		<string>fbapi20140116</string>
+		<string>fbapi20150313</string>
+		<string>fbapi20150629</string>
+		<string>fbapi20160328</string>
+		<string>fbauth</string>
+		<string>fb-messenger-api20140430</string>
+	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -38,36 +61,13 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>カメラにアクセスする権限を付与してください。</string>
+	<string>Imaryにカメラへのアクセスを許可してください。許可すると写真と動画を撮影して日記に記録することができるようになります。</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>マイク（ビデオ用）にアクセスする権限を付与してください。</string>
+	<string>Imaryにマイクへのアクセスを許可してください。許可すると動画に音声を付けて日記に記録することができるようになります。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>写真にアクセスする権限を付与してください。</string>
-  <key>LSApplicationQueriesSchemes</key>
-  <array>
-    <string>twitter</string>
-    <string>instagram</string>
-    <string>instagram-stories</string>
-    <string>fb</string>
-    <string>fbapi</string>
-    <string>fbauth2</string>
-    <string>fbshareextension</string>
-    <string>fb-stories</string>
-    <string>fbapi20130214</string>
-    <string>fbapi20130410</string>
-    <string>fbapi20130702</string>
-    <string>fbapi20131010</string>
-    <string>fbapi20131219</string>
-    <string>fbapi20140410</string>
-    <string>fbapi20140116</string>
-    <string>fbapi20150313</string>
-    <string>fbapi20150629</string>
-    <string>fbapi20160328</string>
-    <string>fbauth</string>
-    <string>fb-messenger-api20140430</string>
-  </array>
+	<string>Imaryに写真へのアクセスを許可してください。許可すると写真を選択して日記に記録することができるようになります。</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
