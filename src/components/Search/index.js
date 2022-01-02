@@ -1,4 +1,5 @@
-import React, {useEffect} from 'react';
+/* eslint-disable no-misleading-character-class */
+import React from 'react';
 import {
   TouchableOpacity,
   View,
@@ -8,26 +9,27 @@ import {
   Image,
   Dimensions,
   SafeAreaView,
-  ActivityIndicator,
-  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   LogBox,
   SectionList,
-  Animated,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import ToggleSwitch from 'toggle-switch-react-native';
 import {Diary_Schema, Init_Schema} from '../../realm/ExcuteData';
 import Realm from 'realm';
-import {formatData, searchData, convertListTag, getCurrentCalDate} from '../../realm/Common';
+import {formatData, searchData, convertListTag} from '../../realm/Common';
 import {ItemDiary} from '../ItemDiary';
 import {Admob} from '../AdMobs/Admobs';
 import {useFocusEffect} from '@react-navigation/native';
+
+import PropTypes from 'prop-types';
+import {AbortController} from 'abort-controller';
+import RNExitApp from 'react-native-exit-app';
 const MojiJS = require('mojijs');
 
 export default function Search({route, navigation}) {
-  const {index, type} = route.params;
+  const {index, type} = route?.params;
   const [checked, setChecked] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [color, setColor] = React.useState([]);
@@ -40,6 +42,7 @@ export default function Search({route, navigation}) {
   const [lsTagConvert, setLsTagConvert] = React.useState([]);
   const [listTag, setListTag] = React.useState([]);
   const [filterTag, setFilterTag] = React.useState([]);
+  const [realm, setRealm] = React.useState(null);
 
   const info = {
     index: index,
@@ -201,9 +204,9 @@ export default function Search({route, navigation}) {
     setFilterTag([]);
     Keyboard.dismiss();
   };
-  
-  const preparedData = () => {
-    Realm.open({
+
+  const preparedData = async () => {
+    await Realm.open({
       schema: [Diary_Schema, Init_Schema], // predefined schema
       schemaVersion: 5,
     }).then(realm => {
@@ -230,6 +233,7 @@ export default function Search({route, navigation}) {
           },
         );
       }
+      setRealm(realm);
       return () => {
         realm.close();
       };
@@ -242,26 +246,26 @@ export default function Search({route, navigation}) {
       preparedData();
       LogBox.ignoreAllLogs();
       const backAction = () => {
-        if (route.params.widget) {
+        if (route?.params?.widget) {
           BackHandler.exitApp();
           RNExitApp.exitApp();
         }
         return false;
       };
-  
+
       BackHandler.addEventListener('hardwareBackPress', backAction);
       return () => {
         ac.abort();
+        if (realm && !realm.isClosed) {
+          realm?.close();
+        }
         BackHandler.removeEventListener('hardwareBackPress', backAction);
       };
-    }, [route.params,textDiary,
-      textTag,
-      color,
-      checked]),
+    }, [route.params, textDiary, textTag, color, checked]),
   );
 
   // useEffect(() => {
-    
+
   // }, [route.params]);
 
   return (
@@ -313,10 +317,10 @@ export default function Search({route, navigation}) {
               placeholder="タグ検索"
               onChangeText={text => onChangeTagText(text)}
               value={textTag}
-              onFocus={(event: Event) => setFocus(event)}
+              onFocus={event => setFocus(event)}
               onBlur={() => setFilterTag([])}
             />
-            {filterTag.length > 0 && textTag.replace('#', '').trim() !== '' ? (
+            {filterTag.length > 0 && textTag.replace('#', '').trim() !== '' && (
               <View style={styles.autocompleteContainer}>
                 <View style={styles.containerSuggestTag}>
                   {filterTag.map((data, index) => {
@@ -333,7 +337,7 @@ export default function Search({route, navigation}) {
                   })}
                 </View>
               </View>
-            ) : null}
+            )}
             <View style={styles.colorContainer}>
               {dataColors.map((data, index) => {
                 return (
@@ -342,12 +346,12 @@ export default function Search({route, navigation}) {
                       style={styles.searchColor}
                       onPress={() => searchColor(data.id)}>
                       <Image source={data.imageSrc} />
-                      {color.includes(data.id) ? (
+                      {color.includes(data.id) && (
                         <Image
                           style={{position: 'absolute', top: 3}}
                           source={require('../../assets/check.png')}
                         />
-                      ) : null}
+                      )}
                     </TouchableOpacity>
                   </View>
                 );
@@ -386,8 +390,9 @@ export default function Search({route, navigation}) {
             </Text>
           );
         }}
-        
-        renderItem={({item, i}) => <ItemDiary i={i} item={item} info={info} mainData={mainData} />}
+        renderItem={({item, i}) => (
+          <ItemDiary i={i} item={item} info={info} mainData={mainData} />
+        )}
         keyExtractor={(item, index) => index}>
         {/* {loading === true ? (
           <View style={styles.listDiaryContainer}>
@@ -444,11 +449,22 @@ export default function Search({route, navigation}) {
             <ActivityIndicator size="large" color="#0000ff" />
           </View>
         )} */}
-        */}
       </SectionList>
     </SafeAreaView>
   );
 }
+
+Search.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }),
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      widget: PropTypes.bool,
+    }),
+  }),
+};
 
 const styles = StyleSheet.create({
   containerView: {

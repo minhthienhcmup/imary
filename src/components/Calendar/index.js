@@ -7,7 +7,6 @@ import {
   ScrollView,
   View,
   Image,
-  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import {ItemDiary} from '../ItemDiary';
@@ -25,9 +24,11 @@ import Entypo from 'react-native-vector-icons/Entypo';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import {Diary_Schema, Init_Schema} from '../../realm/ExcuteData';
 import Realm from 'realm';
-const windowWidth = Dimensions.get('screen').width;
+import PropTypes from 'prop-types';
+import {AbortController} from 'abort-controller';
+
 export default function Search({route, navigation}) {
-  const {index, type, objDate, startDay, mainDate} = route.params;
+  const {index, type, objDate, startDay, mainDate} = route?.params;
   const {eventDate} = mainDate;
   const calendarRef = React.useRef(null);
   const [month, setMonth] = React.useState(new Date(index).getMonth() + 1);
@@ -40,6 +41,7 @@ export default function Search({route, navigation}) {
   const [selectDay, setSelectDay] = React.useState(index);
   const [dateHeader, setDateHeader] = React.useState();
   const [loadingData, setLoadingData] = React.useState(true);
+  const [realm, setRealm] = React.useState(null);
 
   const initDate = new Date(index);
   const BackIcon = () => <Ionicons name="arrow-back" size={26} />;
@@ -51,27 +53,34 @@ export default function Search({route, navigation}) {
   };
   useEffect(() => {
     const ac = new AbortController();
-    Realm.open({
-      schema: [Diary_Schema, Init_Schema], // predefined schema
-      schemaVersion: 5,
-    }).then(realm => {
-      const result1 = realm.objects('diaryData').sorted('_id', true);
-      setinitData(result1);
-      result1.length > 0
-        ? setData(formatDataCal(result1, itemDate))
-        : setData([]);
+    const initData = async () => {
+      await Realm.open({
+        schema: [Diary_Schema, Init_Schema], // predefined schema
+        schemaVersion: 5,
+      }).then(realm => {
+        const result1 = realm.objects('diaryData').sorted('_id', true);
+        setinitData(result1);
+        result1.length > 0
+          ? setData(formatDataCal(result1, itemDate))
+          : setData([]);
 
-      let date =
-        getCurrentDate(true) + getDay(new Date().getDay()) === itemDate
-          ? 'Today　' + itemDate
-          : itemDate;
-      setDateHeader(date);
-      // setLoading(true);
-      return () => {
-        realm.close();
-      };
-    });
+        let date =
+          getCurrentDate(true) + getDay(new Date().getDay()) === itemDate
+            ? 'Today　' + itemDate
+            : itemDate;
+        setDateHeader(date);
+        setRealm(realm);
+        // setLoading(true);
+        return () => {
+          realm.close();
+        };
+      });
+    };
+    initData();
     return () => {
+      if (realm && !realm.isClosed) {
+        realm?.close();
+      }
       ac.abort();
     };
   }, [route.params]);
@@ -106,14 +115,14 @@ export default function Search({route, navigation}) {
     setDateHeader(dateH);
   };
 
-  const onSwipeLeft = gestureState => {
+  const onSwipeLeft = () => {
     const dateInit = new Date(
       new Date(selectDay).setDate(new Date(selectDay).getDate() + 1),
     );
     setSelectDate(dateInit);
   };
 
-  const onSwipeRight = gestureState => {
+  const onSwipeRight = () => {
     const dateInit = new Date(
       new Date(selectDay).setDate(new Date(selectDay).getDate() - 1),
     );
@@ -457,20 +466,20 @@ export default function Search({route, navigation}) {
               velocityThreshold: 0.8,
               directionalOffsetThreshold: 150,
             }}>
-            {data !== null && data.length > 0 ? (
+            {data !== null && data.length > 0 && (
               <Text style={styles.textDate}>{dateHeader}</Text>
-            ) : null}
+            )}
             <View>
-              {data !== null && data.length > 0
-                ? data.map((item, index) => {
-                    return <ItemDiary key={index} item={item} info={info} />;
-                  })
-                : null}
-              {data !== null && data.length === 0 ? (
+              {data !== null &&
+                data.length > 0 &&
+                data.map((item, index) => {
+                  return <ItemDiary key={index} item={item} info={info} />;
+                })}
+              {data !== null && data.length === 0 && (
                 <View style={styles.contentEmpty}>
                   <Text style={styles.textDate}>{dateHeader}</Text>
                 </View>
-              ) : null}
+              )}
             </View>
           </GestureRecognizer>
         ) : (
@@ -485,7 +494,7 @@ export default function Search({route, navigation}) {
           activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image
@@ -498,6 +507,22 @@ export default function Search({route, navigation}) {
     </SafeAreaView>
   );
 }
+
+Search.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }),
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      index: PropTypes.number,
+      type: PropTypes.number,
+      objDate: PropTypes.object,
+      startDay: PropTypes.string,
+      mainDate: PropTypes.string,
+    }),
+  }),
+};
 
 const styles = StyleSheet.create({
   container: {

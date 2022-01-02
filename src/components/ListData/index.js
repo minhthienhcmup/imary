@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {ItemDiary} from '../ItemDiary';
 import {
   StyleSheet,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 export const ViewDataList = props => {
   const dateContainer = date => {
@@ -39,7 +40,7 @@ export const ViewDataList = props => {
       numColumns={1}
       stickySectionHeadersEnabled={false}
       horizontal={false}
-      sections={props.data}
+      sections={props?.data}
       bounces={false}
       onEndReachedThreshold={0.7}
       removeClippedSubviews={true} // Unmount components when outside of window
@@ -80,7 +81,7 @@ export const ViewDataList = props => {
             <View style={dateContainer(section.title)}>
               <Text style={styles.textDate}>{section.title}</Text>
             </View>
-            {section.title === props.data[0].title ? (
+            {section.title === props.data[0].title && (
               <View style={styles.rightIconContainer}>
                 <TouchableOpacity
                   style={styles.setting}
@@ -91,7 +92,7 @@ export const ViewDataList = props => {
                   />
                 </TouchableOpacity>
               </View>
-            ) : null}
+            )}
           </View>
         );
       }}
@@ -99,6 +100,14 @@ export const ViewDataList = props => {
       keyExtractor={(item, index) => index}
     />
   );
+};
+
+ViewDataList.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
+  data: PropTypes.array,
+  type: PropTypes.number,
 };
 
 const styles = StyleSheet.create({

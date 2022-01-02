@@ -8,7 +8,7 @@ export const BottomNav = props => {
         <TouchableOpacity onPress={() => props.navigation.navigate('Calendar')} activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image
@@ -22,7 +22,7 @@ export const BottomNav = props => {
         <TouchableOpacity onPress={() => props.navigation.navigate('Search')} activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image source={require('../../assets/search.jpg')} 
@@ -43,7 +43,7 @@ export const BottomNav = props => {
             activeOpacity={0.7}>
             <View style={[styles.imageNav, {elevation: 13}]}>
               <Image
-                source={require('../../assets/gradient.png')}
+                source={require('../../assets/Gradient.png')}
                 style={styles.imageGadient}
               />
               <Image
@@ -69,7 +69,7 @@ export const BottomNav = props => {
           activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image
@@ -83,7 +83,7 @@ export const BottomNav = props => {
         <TouchableOpacity onPress={() => props.navigation.navigate('Write')} activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image

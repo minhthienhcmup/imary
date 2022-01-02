@@ -54,26 +54,25 @@ export const saveData = async (
   let fullDate = getCurrentDate(true) + getDay(new Date().getDay());
   let time = getCurrentTime(true);
   let id = getCurrentDate(false) + getCurrentTime(false);
-  let imageSource =
-    imageSrc !== '' ? JSON.stringify(imageSrc) : '';
+  let imageSource = imageSrc !== '' ? JSON.stringify(imageSrc) : '';
   let tagText = '';
-  tagArr.forEach(item => {
+  tagArr?.forEach(item => {
     tagText = tagText.concat(item);
   });
 
   let videoSource = video !== '' ? JSON.stringify(video) : '';
   let data = {
     _id: id,
-    fullDate: fullDate,
-    time: time,
-    content: diaryContent,
-    color: color,
-    favorite: favorite,
+    fullDate: fullDate ?? '',
+    time: time ?? '',
+    content: diaryContent ?? '',
+    color: color ?? '#F5F5F5',
+    favorite: favorite ?? false,
     day: new Date().getDate(),
-    tag: tagArr,
-    imageSrc: imageSource,
-    video: videoSource,
-    tagText: tagText,
+    tag: tagArr ?? [],
+    imageSrc: imageSource ?? '',
+    video: videoSource ?? '',
+    tagText: tagText ?? '',
     r: Math.random() * 100000,
   };
 
@@ -99,14 +98,18 @@ export const saveData = async (
   image = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
   DefaultPreference.get('widgetBackgroundOpt').then(opt => {
     if (image.length > 0 && (opt === '0' || opt === undefined)) {
-      DefaultPreference.set('backgroundImage', image[0].uri);
+      DefaultPreference.set('backgroundImage', image?.[0]?.uri);
     }
-  })
+  });
   DefaultPreference.set('date', date);
+  if (!realm.isClosed) {
+    realm.close();
+  }
 };
-saveData().catch(error => {
-  console.log(`An error occurred: ${error}`);
-});
+
+// saveData().catch(error => {
+//   console.log(`An error occurred: ${error}`);
+// });
 
 export const updateData = async (id, favorite) => {
   const realm = await Realm.open({
@@ -139,6 +142,9 @@ export const updateUsePass = async usePass => {
     let result = realm.create('initData', data, true);
     console.log(result);
   });
+  if (!realm.isClosed) {
+    realm.close();
+  }
 };
 
 export const updatePass = async pass => {
@@ -155,6 +161,9 @@ export const updatePass = async pass => {
   realm.write(() => {
     let result = realm.create('initData', data, true);
   });
+  if (!realm.isClosed) {
+    realm.close();
+  }
 };
 
 export const updateStartDay = async startDay => {
@@ -172,6 +181,9 @@ export const updateStartDay = async startDay => {
     let result = realm.create('initData', data, true);
     console.log(result);
   });
+  if (!realm.isClosed) {
+    realm.close();
+  }
 };
 
 export const deleteById = async id => {
@@ -180,8 +192,11 @@ export const deleteById = async id => {
     schemaVersion: 5,
   });
   realm.write(() => {
-    realm.delete(realm.objectForPrimaryKey('diaryData', id)); 
+    realm.delete(realm.objectForPrimaryKey('diaryData', id));
   });
+  if (!realm.isClosed) {
+    realm.close();
+  }
 };
 
 export const updateListDate = async id => {
@@ -211,4 +226,7 @@ export const updateListDate = async id => {
       realm.create('initData', dataInit, true);
     });
   }
-}
+  if (!realm.isClosed) {
+    realm.close();
+  }
+};

@@ -1,3 +1,4 @@
+/* eslint-disable no-misleading-character-class */
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -16,7 +17,7 @@ import {
   Linking,
   Alert,
   KeyboardAvoidingView,
-  Platform
+  Platform,
 } from 'react-native';
 import {Init_Schema, Diary_Schema} from '../../realm/ExcuteData';
 import Realm from 'realm';
@@ -38,12 +39,13 @@ import Toast from 'react-native-toast-message';
 import {saveData} from '../../realm/ExcuteData';
 import {Admob} from '../AdMobs/Admobs';
 import ImageView from 'react-native-image-viewing';
-import {set} from 'react-native-reanimated';
 import RNExitApp from 'react-native-exit-app';
-import { getStatusBarHeight } from 'react-native-status-bar-height';
-import DefaultPreference from 'react-native-default-preference'
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+import DefaultPreference from 'react-native-default-preference';
 const MojiJS = require('mojijs');
-const appGroupIdentifier = 'group.com.imary';
+import PropTypes from 'prop-types';
+import {AbortController} from 'abort-controller';
+// const appGroupIdentifier = 'group.com.imary';
 
 export default function WriteDiary({navigation, route}) {
   const [content, setContent] = useState('');
@@ -59,6 +61,7 @@ export default function WriteDiary({navigation, route}) {
   const [visibleTag, setVisibleTag] = useState(false);
   const [video, setVideo] = useState('');
   const [videoArr, setVideoArr] = useState([]);
+  const [realm, setRealm] = useState(null);
 
   const [listDate, setListDate] = useState([]);
   const [modalVis, setModalVis] = React.useState(false);
@@ -110,42 +113,47 @@ export default function WriteDiary({navigation, route}) {
       } else if (code === '2') {
         checkCamera();
         cameraVideo();
-      }
-      else {
+      } else {
         setModalVis(false);
       }
     }
 
     BackHandler.addEventListener('hardwareBackPress', backAction);
-
-    Realm.open({
-      schema: [Diary_Schema, Init_Schema],
-      schemaVersion: 5,
-    })
-      .then(realm => {
-        const data = realm.objects('initData');
-        if (data !== 'undefined' && data !== null && data.length > 0) {
-          setListTag(data[0].listTag);
-          setListDate(data[0].listDate);
-          convertListTag(data[0].listTag).then(
-            res => {
-              setLsTagConvert(res);
-            },
-            error => {
-              console.log(error);
-              setLsTagConvert([]);
-            },
-          );
-        }
-        return () => {
-          realm.close();
-          ac.abort();
-        };
+    const initData = async () => {
+      await Realm.open({
+        schema: [Diary_Schema, Init_Schema],
+        schemaVersion: 5,
       })
-      .catch(err => {
-        console.log(err);
-      });
+        .then(realm => {
+          const data = realm.objects('initData');
+          if (data !== 'undefined' && data !== null && data.length > 0) {
+            setListTag(data[0].listTag);
+            setListDate(data[0].listDate);
+            convertListTag(data[0].listTag).then(
+              res => {
+                setLsTagConvert(res);
+              },
+              error => {
+                console.log(error);
+                setLsTagConvert([]);
+              },
+            );
+          }
+          setRealm(realm);
+          return () => {
+            realm.close();
+            ac.abort();
+          };
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+    initData();
     return () => {
+      if (realm && !realm.isClosed) {
+        realm?.close();
+      }
       clearInterval(interval);
       BackHandler.removeEventListener('hardwareBackPress', backAction);
       ac.abort();
@@ -183,7 +191,7 @@ export default function WriteDiary({navigation, route}) {
         await saveVideo(video.path);
       });
     }
-    
+
     setResourcePath([]);
     setContent('');
     setColor(colorDefault);
@@ -226,7 +234,7 @@ export default function WriteDiary({navigation, route}) {
       setVisible(false);
       setFilterTag([]);
       setVisibleTag(false);
-      const result = await ImagePicker.openPicker({
+      await ImagePicker.openPicker({
         height: 300,
         width: 400,
         cropping: true,
@@ -259,7 +267,7 @@ export default function WriteDiary({navigation, route}) {
       setVisible(false);
       setFilterTag([]);
       setVisibleTag(false);
-      const result = await ImagePicker.openCamera({
+      await ImagePicker.openCamera({
         mediaType: 'video',
       }).then(image => {
         let arr = [];
@@ -282,7 +290,7 @@ export default function WriteDiary({navigation, route}) {
       setVisible(false);
       setFilterTag([]);
       setVisibleTag(false);
-      const result = await ImagePicker.openCamera({
+      await ImagePicker.openCamera({
         cropping: false,
         includeBase64: true,
         multiple: true,
@@ -390,72 +398,72 @@ export default function WriteDiary({navigation, route}) {
         <TouchableOpacity
           style={[styles.searchColor, {backgroundColor: bubbleColor0}]}
           onPress={() => setBackGroundColor(bubbleColor0)}>
-          {color === bubbleColor0 ? (
+          {color === bubbleColor0 && (
             <Image
               style={{position: 'absolute'}}
               source={require('../../assets/check.png')}
             />
-          ) : null}
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.searchColor, {backgroundColor: bubbleColor1}]}
           onPress={() => setBackGroundColor(bubbleColor1)}>
-          {color === bubbleColor1 ? (
+          {color === bubbleColor1 && (
             <Image
               style={{position: 'absolute'}}
               source={require('../../assets/check.png')}
             />
-          ) : null}
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.searchColor, {backgroundColor: bubbleColor2}]}
           onPress={() => setBackGroundColor(bubbleColor2)}>
-          {color === bubbleColor2 ? (
+          {color === bubbleColor2 && (
             <Image
               style={{position: 'absolute'}}
               source={require('../../assets/check.png')}
             />
-          ) : null}
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.searchColor, {backgroundColor: bubbleColor3}]}
           onPress={() => setBackGroundColor(bubbleColor3)}>
-          {color === bubbleColor3 ? (
+          {color === bubbleColor3 && (
             <Image
               style={{position: 'absolute'}}
               source={require('../../assets/check.png')}
             />
-          ) : null}
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.searchColor, {backgroundColor: bubbleColor4}]}
           onPress={() => setBackGroundColor(bubbleColor4)}>
-          {color === bubbleColor4 ? (
+          {color === bubbleColor4 && (
             <Image
               style={{position: 'absolute'}}
               source={require('../../assets/check.png')}
             />
-          ) : null}
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.searchColor, {backgroundColor: bubbleColor5}]}
           onPress={() => setBackGroundColor(bubbleColor5)}>
-          {color === bubbleColor5 ? (
+          {color === bubbleColor5 && (
             <Image
               style={{position: 'absolute'}}
               source={require('../../assets/check.png')}
             />
-          ) : null}
+          )}
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.searchColor, {backgroundColor: bubbleColor6}]}
           onPress={() => setBackGroundColor(bubbleColor6)}>
-          {color === bubbleColor6 ? (
+          {color === bubbleColor6 && (
             <Image
               style={{position: 'absolute'}}
               source={require('../../assets/check.png')}
             />
-          ) : null}
+          )}
         </TouchableOpacity>
       </View>
     );
@@ -603,11 +611,11 @@ export default function WriteDiary({navigation, route}) {
     };
   };
 
-  const alertRequestPermission = (service) => {
+  const alertRequestPermission = service => {
     const libraryString = `Imaryにはまだ「写真アルバム」アクセス権がありません。
-    写真を使用するには、写真アルバムへのアクセスを許可してください。`
+    写真を使用するには、写真アルバムへのアクセスを許可してください。`;
     const cameraString = `Imaryにはまだ「カメラ」アクセス権がありません。
-    写真とビデオ撮影機能を使用するには、カメラへのアクセスを許可してください。`
+    写真とビデオ撮影機能を使用するには、カメラへのアクセスを許可してください。`;
     Alert.alert('', service === 'library' ? libraryString : cameraString, [
       {
         text: 'キャンセル',
@@ -674,7 +682,7 @@ export default function WriteDiary({navigation, route}) {
             alignItems: 'center',
             marginTop: 5,
           }}>
-          {visibleTag ? (
+          {visibleTag && (
             <View style={getInputTagText()}>
               <Text
                 style={{
@@ -698,11 +706,11 @@ export default function WriteDiary({navigation, route}) {
                 underlineColorAndroid="transparent"
                 placeholderTextColor="black"
                 autoFocus={true}
-                onFocus={(event: Event) => setFocus(event)}
+                onFocus={event => setFocus(event)}
               />
             </View>
-          ) : null}
-          {tagText.replace('#', '').trim() !== '' && visibleTag ? (
+          )}
+          {tagText.replace('#', '').trim() !== '' && visibleTag && (
             <TouchableOpacity
               style={{alignItems: 'center', alignSelf: 'center'}}
               onPress={() => addTag()}>
@@ -711,9 +719,9 @@ export default function WriteDiary({navigation, route}) {
                 style={{width: 26, height: 26}}
               />
             </TouchableOpacity>
-          ) : null}
+          )}
         </View>
-        {filterTag.length > 0 && tagText.replace('#', '').trim() !== '' ? (
+        {filterTag.length > 0 && tagText.replace('#', '').trim() !== '' && (
           <View style={styles.containerSuggestTag}>
             {filterTag.map((data, index) => {
               return (
@@ -727,10 +735,10 @@ export default function WriteDiary({navigation, route}) {
               );
             })}
           </View>
-        ) : null}
+        )}
 
         <View style={styles.containerTag}>
-          {tagArr.map((data, index) => {
+          {tagArr?.map((data, index) => {
             return (
               <View key={index}>
                 <Text style={styles.textTag}>{data}</Text>
@@ -788,7 +796,7 @@ export default function WriteDiary({navigation, route}) {
         <View style={styles.imageContainer}>
           {videoArr.map((e, index) => {
             return (
-              <View style={{margin: 5}}>
+              <View style={{margin: 5}} key={index}>
                 <TouchableOpacity onPress={() => modalVideo(e)}>
                   <Video
                     source={{uri: e.path}} // Can be a URL or a local file.
@@ -879,7 +887,7 @@ export default function WriteDiary({navigation, route}) {
             activeOpacity={0.7}>
             <View style={[styles.imageNav, {marginBottom: 0, elevation: 13}]}>
               <Image
-                source={require('../../assets/gradient.png')}
+                source={require('../../assets/Gradient.png')}
                 style={styles.imageGadient}
               />
               <Image
@@ -895,7 +903,7 @@ export default function WriteDiary({navigation, route}) {
             {/* <Text style={{fontSize: 20, color: '#1e81b0'}}>写真</Text> */}
             <View style={[styles.imageNav, {marginBottom: 0, elevation: 13}]}>
               <Image
-                source={require('../../assets/gradient.png')}
+                source={require('../../assets/Gradient.png')}
                 style={styles.imageGadient}
               />
               <Image
@@ -906,15 +914,19 @@ export default function WriteDiary({navigation, route}) {
           </TouchableOpacity>
         </View>
       </Modal>
-      { Platform.OS === 'ios' ? 
-        <KeyboardAvoidingView behavior='position' keyboardVerticalOffset={getStatusBarHeight() + 5}>
-          {visible === true ? colorBar() : null}
+      {Platform.OS === 'ios' ? (
+        <KeyboardAvoidingView
+          behavior="position"
+          keyboardVerticalOffset={getStatusBarHeight() + 5}>
+          {visible && colorBar()}
           <View style={getStyleBottomNav()}>
             <View style={styles.iconNav}>
-              <TouchableOpacity onPress={() => pickPicture()} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => pickPicture()}
+                activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -925,10 +937,12 @@ export default function WriteDiary({navigation, route}) {
               </TouchableOpacity>
             </View>
             <View style={styles.iconNav}>
-              <TouchableOpacity onPress={() => checkCamera()} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => checkCamera()}
+                activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -939,10 +953,12 @@ export default function WriteDiary({navigation, route}) {
               </TouchableOpacity>
             </View>
             <View style={styles.iconNav}>
-              <TouchableOpacity onPress={() => checkColorBar()} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => checkColorBar()}
+                activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -958,7 +974,7 @@ export default function WriteDiary({navigation, route}) {
                 activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -973,7 +989,7 @@ export default function WriteDiary({navigation, route}) {
               <TouchableOpacity onPress={saveDiary} activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -985,15 +1001,17 @@ export default function WriteDiary({navigation, route}) {
             </View>
           </View>
         </KeyboardAvoidingView>
-      : 
+      ) : (
         <View>
-          {visible === true ? colorBar() : null}
+          {visible && colorBar()}
           <View style={getStyleBottomNav()}>
             <View style={styles.iconNav}>
-              <TouchableOpacity onPress={() => pickPicture()} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => pickPicture()}
+                activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -1004,10 +1022,12 @@ export default function WriteDiary({navigation, route}) {
               </TouchableOpacity>
             </View>
             <View style={styles.iconNav}>
-              <TouchableOpacity onPress={() => checkCamera()} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => checkCamera()}
+                activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -1018,10 +1038,12 @@ export default function WriteDiary({navigation, route}) {
               </TouchableOpacity>
             </View>
             <View style={styles.iconNav}>
-              <TouchableOpacity onPress={() => checkColorBar()} activeOpacity={0.7}>
+              <TouchableOpacity
+                onPress={() => checkColorBar()}
+                activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -1037,7 +1059,7 @@ export default function WriteDiary({navigation, route}) {
                 activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -1052,7 +1074,7 @@ export default function WriteDiary({navigation, route}) {
               <TouchableOpacity onPress={saveDiary} activeOpacity={0.7}>
                 <View style={[styles.imageNav, {elevation: 13}]}>
                   <Image
-                    source={require('../../assets/gradient.png')}
+                    source={require('../../assets/Gradient.png')}
                     style={styles.imageGadient}
                   />
                   <Image
@@ -1064,10 +1086,22 @@ export default function WriteDiary({navigation, route}) {
             </View>
           </View>
         </View>
-      }
+      )}
     </SafeAreaView>
   );
 }
+
+WriteDiary.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }),
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      code: PropTypes.string,
+    }),
+  }),
+};
 
 const styles = StyleSheet.create({
   container: {

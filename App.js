@@ -12,15 +12,16 @@ import {
   StatusBar,
   Linking,
 } from 'react-native';
-import SharedGroupPreferences from 'react-native-shared-group-preferences'
-import DefaultPreference from 'react-native-default-preference'
+import Realm from 'realm';
+import DefaultPreference from 'react-native-default-preference';
+import {AbortController} from 'abort-controller';
 
 const appGroupIdentifier = 'group.com.imary';
 
 const config = {
   screens: {
     Write: 'Write/:code',
-    Search: 'Search/:widget'
+    Search: 'Search/:widget',
   },
 };
 
@@ -36,9 +37,10 @@ const App = () => {
   const [status, setStatus] = useState('normal');
   const [link, setLink] = useState(null);
   const [diaryData, setDiaryData] = useState(null);
+  const [realm, setRealm] = useState(null);
 
   const onEnd = password => {
-    if (password == initData[0].password) {
+    if (password === initData[0].password) {
       setMessage('パスワードは正しい');
       setStatus('right');
       setVerified(true);
@@ -60,49 +62,62 @@ const App = () => {
     });
     const ac = new AbortController();
     LogBox.ignoreLogs(['Error: ...']); // Ignore log notification by message
-    Realm.open({
-      schema: [Diary_Schema, Init_Schema], // predefined schema
-      schemaVersion: 5,
-    })
-      .then(realm => {
-        const data = realm.objects('initData');
-        if (data !== null && data.length > 0) {
-          setInitData(data);
-        }
-        const diary = realm.objects('diaryData').sorted('_id', true);
-        if (diary !== null && diary.length > 0) {
-          const year = diary[0]._id.substring(0, 4);
-          const month = diary[0]._id.substring(4, 6);
-          const day = diary[0]._id.substring(6, 8);
-          const hour = diary[0]._id.substring(8, 10);
-          const minute = diary[0]._id.substring(10, 12);
-          const date = year + '/' + month + '/' + day + ' ' + hour + ':' + minute;
-          let image = diary.imageSrc !== '' ? JSON.parse(diary.imageSrc) : [];
-          image = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
-          DefaultPreference.get('widgetBackgroundOpt').then(opt => {
-            if (image.length > 0 && (opt === '0' | opt === undefined)) {
-              DefaultPreference.set('backgroundImage', image[0].uri);
-            }
-          });
-          DefaultPreference.set('date', date);
-        }
-        return () => {
-          realm.close();
-        };
+    const initData = async () => {
+      await Realm.open({
+        schema: [Diary_Schema, Init_Schema], // predefined schema
+        schemaVersion: 5,
       })
-      .catch(err => {
-        console.log(err);
-      });
-    return () => ac.abort();
+        .then(realm => {
+          const data = realm.objects('initData');
+          if (data !== null && data.length > 0) {
+            setInitData(data);
+          }
+          const diary = realm.objects('diaryData').sorted('_id', true);
+          if (diary !== null && diary.length > 0) {
+            const year = diary[0]._id.substring(0, 4);
+            const month = diary[0]._id.substring(4, 6);
+            const day = diary[0]._id.substring(6, 8);
+            const hour = diary[0]._id.substring(8, 10);
+            const minute = diary[0]._id.substring(10, 12);
+            const date =
+              year + '/' + month + '/' + day + ' ' + hour + ':' + minute;
+            let image =
+              diary?.imageSrc && diary?.imageSrc !== ''
+                ? JSON.parse(diary.imageSrc)
+                : [];
+            image = Array.isArray(image) ? image : [image];
+            DefaultPreference.get('widgetBackgroundOpt').then(opt => {
+              if ((image.length > 0 && opt === '0') || opt === undefined) {
+                DefaultPreference.set('backgroundImage', image?.[0]?.uri);
+              }
+            });
+            DefaultPreference.set('date', date);
+          }
+          setRealm(realm);
+          return () => {
+            realm.close();
+          };
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+    initData();
+    return () => {
+      if (realm && !realm.isClosed) {
+        realm?.close();
+      }
+      ac.abort();
+    };
   }, []);
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
-      {(verified === false &&
-      initData.length > 0 &&
-      initData[0].usePass === true &&
-      initData[0].password.trim() !== '' &&
-      (link == null || link == 'imary://Search/0')) ? (
+      {verified === false &&
+      initData?.length > 0 &&
+      initData?.[0]?.usePass &&
+      !!initData?.[0]?.password &&
+      (link === null || link === 'imary://Search/0') ? (
         <View style={styles.container}>
           {/* <MyStatusBar backgroundColor="#292B38" barStyle="dark-content" />  */}
           <PasswordGesture
@@ -121,6 +136,7 @@ const App = () => {
         </View>
       ) : (
         <NavigationContainer showLabel="false" linking={linking}>
+          <StatusBar translucent barStyle="dark-content" />
           <MainScreen />
           <Toast ref={ref => Toast.setRef(ref)} />
         </NavigationContainer>
@@ -129,13 +145,5 @@ const App = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  statusBar: {
-    height: StatusBar.currentHeight,
-  },
-});
 
 export default App;
