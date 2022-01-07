@@ -1,6 +1,8 @@
 import {PermissionsAndroid, Platform} from 'react-native';
 import CameraRoll from '@react-native-community/cameraroll';
 
+export const isAndroid = Platform.OS === 'android';
+
 export const mergeListTag = (tagArr, listTag) => {
   let unionArr = [...listTag, ...tagArr];
   let result = unionArr.filter((item, pos) => unionArr.indexOf(item) === pos);
@@ -95,7 +97,7 @@ export const formatDataCal = (snapshot, d) => {
 
     let imageSrc =
       e?.imageSrc && e.imageSrc !== '' ? JSON.parse(e.imageSrc) : [];
-    console.log(imageSrc);
+    // console.log(imageSrc);
     //let videoSrc = e.video !== '' ? JSON.parse(e.video) : '';
 
     let videoSrc = e?.video && e.video !== '' ? JSON.parse(e.video) : [];

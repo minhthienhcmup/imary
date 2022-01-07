@@ -3,7 +3,6 @@ import {formatData, getCurrentCalDate} from '../../realm/Common';
 import {ViewDataList} from '../ListData';
 import {BottomNav} from '../BtnBottom';
 import {EmptyComponents} from '../Empty';
-import PropTypes from 'prop-types';
 import {AbortController} from 'abort-controller';
 import {
   SafeAreaView,
@@ -12,14 +11,21 @@ import {
   ActivityIndicator,
   LogBox,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import GestureRecognizerView from 'rn-swipe-gestures';
-import {Diary_Schema, Init_Schema} from '../../realm/ExcuteData';
+import {
+  deleteById,
+  Diary_Schema,
+  Init_Schema,
+  updateListDate,
+} from '../../realm/ExcuteData';
 import {useFocusEffect} from '@react-navigation/native';
 import Realm from 'realm';
 import {Admob} from '../AdMobs/Admobs';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 export default function MainDiary({route, navigation}) {
-  const {index, type, updateData} = route?.params || {
+  const {index, type, updateData} = route?.params ?? {
     updateData: () => {},
     index: 0,
     type: 0,
@@ -122,6 +128,12 @@ export default function MainDiary({route, navigation}) {
     };
   }, [index, route?.params, type]);
 
+  const deleteDiary = async id => {
+    await deleteById(id);
+    await updateListDate(id);
+    preparedData();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <GestureRecognizerView
@@ -144,6 +156,7 @@ export default function MainDiary({route, navigation}) {
                 navigation={navigation}
                 index={index}
                 type={type}
+                deleteDiary={deleteDiary}
               />
             ) : (
               <EmptyComponents indexDay={iDay} navigation={navigation} />
@@ -168,9 +181,10 @@ MainDiary.propTypes = {
   }),
   route: PropTypes.shape({
     params: PropTypes.shape({
+      index: PropTypes.number,
       type: PropTypes.number,
-      isWrite: PropTypes.bool,
       updateData: PropTypes.func,
+      isWrite: PropTypes.bool,
     }),
   }),
 };
@@ -179,6 +193,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingTop: getStatusBarHeight(),
   },
   rightIconContainer: {
     width: 40,

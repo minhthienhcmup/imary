@@ -1,6 +1,12 @@
 import Realm from 'realm';
-import {getCurrentDate, getCurrentTime, getDay} from '../../realm/Common';
+import {
+  getCurrentDate,
+  getCurrentTime,
+  getDay,
+  isAndroid,
+} from '../../realm/Common';
 import DefaultPreference from 'react-native-default-preference';
+import RNFS from 'react-native-fs';
 
 const appGroupIdentifier = 'group.com.imary';
 
@@ -142,9 +148,6 @@ export const updateUsePass = async usePass => {
     let result = realm.create('initData', data, true);
     console.log(result);
   });
-  if (!realm.isClosed) {
-    realm.close();
-  }
 };
 
 export const updatePass = async pass => {
@@ -161,9 +164,6 @@ export const updatePass = async pass => {
   realm.write(() => {
     let result = realm.create('initData', data, true);
   });
-  if (!realm.isClosed) {
-    realm.close();
-  }
 };
 
 export const updateStartDay = async startDay => {
@@ -181,9 +181,6 @@ export const updateStartDay = async startDay => {
     let result = realm.create('initData', data, true);
     console.log(result);
   });
-  if (!realm.isClosed) {
-    realm.close();
-  }
 };
 
 export const deleteById = async id => {
@@ -191,12 +188,44 @@ export const deleteById = async id => {
     schema: [Diary_Schema, Init_Schema],
     schemaVersion: 5,
   });
-  realm.write(() => {
-    realm.delete(realm.objectForPrimaryKey('diaryData', id));
-  });
-  if (!realm.isClosed) {
-    realm.close();
+  let obj = realm.objectForPrimaryKey('diaryData', id);
+  let video = JSON.parse(obj?.video);
+  console.log(video);
+  if (video) {
+    video = video?.[0] ?? video;
+    deleteFile(video?.path);
+    if (!isAndroid) {
+      deleteFile(video?.sourceURL);
+    }
   }
+
+  realm.write(() => {
+    realm.delete(obj);
+  });
+};
+
+const deleteFile = path => {
+  if (!path) {
+    return;
+  }
+  RNFS.exists(path)
+    .then(result => {
+      if (result) {
+        return (
+          RNFS.unlink(path)
+            .then(() => {
+              console.log('FILE DELETED');
+            })
+            // `unlink` will throw an error, if the item to unlink does not exist
+            .catch(err => {
+              console.log(err.message);
+            })
+        );
+      }
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
 };
 
 export const updateListDate = async id => {
@@ -211,7 +240,7 @@ export const updateListDate = async id => {
     .filtered('_id BEGINSWITH[c] $0', id.substring(0, 8));
   if (result.length === 0) {
     let resultInit = realm.objects('initData');
-    let listDates = [...resultInit[0].listDate];
+    let listDates = [...resultInit?.[0]?.listDate];
     const index = listDates.indexOf(date);
     console.log('date ', date, index);
 
@@ -224,6 +253,35 @@ export const updateListDate = async id => {
     };
     realm.write(() => {
       realm.create('initData', dataInit, true);
+    });
+  }
+};
+
+export const updateVideoPaths = async () => {
+  const realm = await Realm.open({
+    schema: [Diary_Schema, Init_Schema],
+    schemaVersion: 5,
+  });
+  const result = realm.objects('diaryData');
+  let path = RNFS.DocumentDirectoryPath.split('/');
+  let newID = path[path.length - 2];
+  if (result) {
+    result?.map(obj => {
+      if (obj?.video && obj?.video !== '[]') {
+        let newVideo = obj.video;
+        let video = JSON.parse(obj.video)[0] ?? JSON.parse(obj.video);
+        let tempPath = video.path.split('/');
+        let oldID =
+          tempPath[tempPath.length - 4] !== newID
+            ? tempPath[tempPath.length - 4]
+            : '';
+        if (oldID !== '') {
+          newVideo = newVideo.replace(oldID, newID);
+        }
+        realm.write(() => {
+          obj.video = newVideo;
+        });
+      }
     });
   }
   if (!realm.isClosed) {

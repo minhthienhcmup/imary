@@ -114,6 +114,7 @@ const App = () => {
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
       {verified === false &&
+      initData &&
       initData?.length > 0 &&
       initData?.[0]?.usePass &&
       !!initData?.[0]?.password &&
@@ -144,6 +145,5 @@ const App = () => {
     </SafeAreaView>
   );
 };
-
 
 export default App;

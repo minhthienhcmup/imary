@@ -12,8 +12,9 @@ import {
 import PropTypes from 'prop-types';
 
 export const ViewDataList = props => {
+  const {data, deleteDiary} = props;
   const dateContainer = date => {
-    if (date === props.data[0].title) {
+    if (date === data[0].title) {
       return {
         alignSelf: 'center',
         alignItems: 'center',
@@ -96,7 +97,9 @@ export const ViewDataList = props => {
           </View>
         );
       }}
-      renderItem={({item, i}) => <ItemDiary i={i} item={item} info={props} />}
+      renderItem={({item, i}) => (
+        <ItemDiary i={i} item={item} info={props} deleteDiary={deleteDiary} />
+      )}
       keyExtractor={(item, index) => index}
     />
   );
@@ -108,6 +111,11 @@ ViewDataList.propTypes = {
   }),
   data: PropTypes.array,
   type: PropTypes.number,
+  deleteDiary: PropTypes.func,
+};
+
+ViewDataList.defaultProps = {
+  deleteDiary: () => {},
 };
 
 const styles = StyleSheet.create({

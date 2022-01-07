@@ -23,13 +23,20 @@ import {
   updateUsePass,
   updatePass,
   updateStartDay,
+  updateVideoPaths,
 } from '../../realm/ExcuteData';
-import {formatData, getFullDay, getListVideoName} from '../../realm/Common';
+import {
+  getFullDay,
+  getListVideoName,
+  hasAndroidPermission,
+  isAndroid,
+} from '../../realm/Common';
 import ToggleSwitch from 'toggle-switch-react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import DefaultPreference from 'react-native-default-preference';
 import PropTypes from 'prop-types';
 import {AbortController} from 'abort-controller';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 const appGroupIdentifier = 'group.com.imary';
 
@@ -68,7 +75,7 @@ export default function Setting({navigation}) {
   const [message, setMessage] = useState('パターンを入力してください');
   const [status, setStatus] = useState('normal');
   const [backgroundDefault, setBackgroundDefault] = useState('画像を選択');
-  const [resourcePath, setResourcePath] = useState([]);
+  // const [resourcePath, setResourcePath] = useState([]);
   const [diaryData, setDiaryData] = useState(null);
   const {BackupModule} = NativeModules;
   const [realm, setRealm] = useState(null);
@@ -300,33 +307,54 @@ export default function Setting({navigation}) {
       getListVideoName(diaryData),
       (error, isSuccess) => {
         setLoading(false);
-        Alert.alert('Notice', isSuccess ? 'Backup success' : 'Backup failed', [
-          {
-            text: 'OK',
-            onPress: () => console.log('OK Pressed'),
-            style: 'default',
-          },
-        ]);
+        Alert.alert(
+          'Notice',
+          isSuccess
+            ? 'バックアップが完了しました。'
+            : 'バックアップに失敗しました。',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK Pressed'),
+              style: 'default',
+            },
+          ],
+        );
       },
     );
     // BackupModule.shareToFaceBook('', '', '');
   };
 
-  const onPressRestore = () => {
+  const onPressRestore = async () => {
     setLoading(true);
     if (realm && !realm.isClosed) {
       realm?.close();
     }
-    BackupModule.restoreServer('', (error, isSuccess) => {
-      setLoading(false);
-      Alert.alert('Notice', isSuccess ? 'Restore success' : 'Restore failed', [
-        {
-          text: 'OK',
-          onPress: () => console.log('OK Pressed'),
-          style: 'default',
-        },
-      ]);
-    });
+    const hasPermission = await hasAndroidPermission();
+
+    if (!isAndroid || hasPermission) {
+      BackupModule.restoreServer('', (error, isSuccess) => {
+        setLoading(false);
+        if (!isAndroid && isSuccess) {
+          _updateVideoPaths();
+        }
+        Alert.alert(
+          'Notice',
+          isSuccess ? '復元が完了しました。' : '復元に失敗しました。',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK Pressed'),
+              style: 'default',
+            },
+          ],
+        );
+      });
+    }
+  };
+
+  const _updateVideoPaths = async () => {
+    await updateVideoPaths();
   };
 
   const itemStartDay = () => (
@@ -399,7 +427,7 @@ export default function Setting({navigation}) {
     <SafeAreaView style={styles.container}>
       {isLoading && (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" color="black" />
         </View>
       )}
       {checked === true && captured === false ? (
@@ -529,6 +557,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E7E6E6',
+    paddingTop: getStatusBarHeight(),
   },
   statusBar: {
     height: StatusBar.currentHeight,

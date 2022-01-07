@@ -26,6 +26,7 @@ import {Diary_Schema, Init_Schema} from '../../realm/ExcuteData';
 import Realm from 'realm';
 import PropTypes from 'prop-types';
 import {AbortController} from 'abort-controller';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 export default function Search({route, navigation}) {
   const {index, type, objDate, startDay, mainDate} = route?.params;
@@ -528,6 +529,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingTop: getStatusBarHeight(),
   },
   calendarHeader: {
     flex: 1,

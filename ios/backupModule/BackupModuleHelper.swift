@@ -39,25 +39,24 @@ struct DocumentsDirectory {
     let iCloudDocumentToCheckURL = iCloudDocumentsURL?.appendingPathComponent("default.realm", isDirectory: false)
     
     let tempURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("react-native-image-crop-picker")
-
-      do {
-        if let urls = try? fileManager.contentsOfDirectory(at: tempURL, includingPropertiesForKeys: nil, options: []) {
-          for myURL in urls {
-            print(myURL.path)
-            if (myURL.pathExtension == "mp4" || myURL.pathExtension == "MP4") {
-              let videoURL = iCloudDocumentsURL?.appendingPathComponent(myURL.lastPathComponent, isDirectory: false)
-              if (fileManager.fileExists(atPath: videoURL?.path ?? "")) {
-                try fileManager.removeItem(atPath: videoURL!.path)
-              }
-              try fileManager.copyItem(at: myURL, to: videoURL!)
+    
+    do {
+      if let urls = try? fileManager.contentsOfDirectory(at: tempURL, includingPropertiesForKeys: nil, options: []) {
+        for myURL in urls {
+          if (myURL.pathExtension == "mp4" || myURL.pathExtension == "MP4") {
+            let videoURL = iCloudDocumentsURL?.appendingPathComponent(myURL.lastPathComponent, isDirectory: false)
+            if (fileManager.fileExists(atPath: videoURL?.path ?? "")) {
+              try fileManager.removeItem(atPath: videoURL!.path)
             }
+            try fileManager.copyItem(at: myURL, to: videoURL!)
           }
         }
-        
-      } catch {
-        print("\(error)")
       }
-    
+      
+    } catch {
+      print("\(error)")
+      return false
+    }
     let realmArchiveURL = iCloudDocumentToCheckURL
     let config = Realm.Configuration(
       // Set the new schema version. This must be greater than the previously used
@@ -100,12 +99,18 @@ struct DocumentsDirectory {
     }
   }
   
-  func copyFileToLocal() {
+  func copyFileToLocal() -> Bool {
     if isCloudEnabled() {
-      //          deleteFilesInDirectory(url: DocumentsDirectory.localDocumentsURL)
       let fileManager = FileManager.default
       let enumerator = fileManager.enumerator(atPath: DocumentsDirectory.iCloudDocumentsURL!.path)
       let tempURL = URL(fileURLWithPath: NSTemporaryDirectory(), isDirectory: true).appendingPathComponent("react-native-image-crop-picker")
+      if !fileManager.fileExists(atPath: tempURL.path) {
+        do {
+          try fileManager.createDirectory(atPath: tempURL.path, withIntermediateDirectories: true, attributes: nil)
+        } catch {
+          print(error.localizedDescription)
+        }
+      }
       while let file = enumerator?.nextObject() as? String {
         do {
           let cloudUrl = DocumentsDirectory.iCloudDocumentsURL!.appendingPathComponent(file)
@@ -116,19 +121,33 @@ struct DocumentsDirectory {
             }
             _ = try Realm.deleteFiles(for: path)
             try fileManager.copyItem(at: cloudUrl, to: DocumentsDirectory.localDocumentsURL.appendingPathComponent(file))
-          } else {
+          }
+          else {
             let localUrl = tempURL.appendingPathComponent(file)
             if (fileManager.fileExists(atPath: localUrl.path)) {
               try fileManager.removeItem(at: localUrl)
             }
             try fileManager.copyItem(at: cloudUrl, to: localUrl)
           }
-          print("Moved to local dir")
-        } catch let error as NSError {
+          print("\(file) Moved to local dir")
+        } catch {
           print("Failed to move file to local dir : \(error)")
+          return false
         }
+        
       }
+      return true;
     }
+    return false;
+  }
+  
+  func deleteFilesInPath(path: URL) {
+    do {
+      let fileURLs = try FileManager.default.contentsOfDirectory(at: path, includingPropertiesForKeys: nil, options: [])
+      for fileURL in fileURLs {
+        try FileManager.default.removeItem(at: fileURL)
+      }
+    }catch  { print(error) }
   }
   
   func DownloadDatabaseFromICloud() -> Bool
@@ -162,36 +181,11 @@ struct DocumentsDirectory {
           }
         }
       }
-      self.copyFileToLocal()
+      return self.copyFileToLocal()
     }
     return false
   }
   
   func shareToSocial(content: String, imgPath: String, tags: String, resoure: String) {
-    //    if SLComposeViewController.isAvailable(forServiceType: SLServiceTypeFacebook) {
-    //
-    //        let facebookShare = SLComposeViewController(forServiceType: SLServiceTypeFacebook)
-    //        if let facebookShare  = facebookShare{
-    //            facebookShare.setInitialText("Excellent development")
-    //            UIApplication.topViewController()?.present(facebookShare, animated: true, completion: nil)
-    //        }
-    //    } else {
-    //          print("Not Available")
-    //    }
-  }
-}
-
-extension UIApplication {
-  class func topViewController(controller: UIViewController? = UIApplication.shared.keyWindow?.rootViewController) -> UIViewController? {
-    if let tabController = controller as? UITabBarController {
-      return topViewController(controller: tabController.selectedViewController)
-    }
-    if let navController = controller as? UINavigationController {
-      return topViewController(controller: navController.visibleViewController)
-    }
-    if let presented = controller?.presentedViewController {
-      return topViewController(controller: presented)
-    }
-    return controller
   }
 }

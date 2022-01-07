@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -15,27 +15,27 @@ import Share, {SupportedSocialApps} from 'react-native-share';
 import Modal from 'react-native-modal';
 import VideoPlayer from 'react-native-video-player';
 import {setMarkedDate, convertMiniSecondToTime} from '../../realm/Common';
-import {updateData, deleteById, updateListDate} from '../../realm/ExcuteData';
+import {updateData} from '../../realm/ExcuteData';
 import ImageView from 'react-native-image-viewing';
 import Video from 'react-native-video';
 //import RNFetchBlob from 'rn-fetch-blob';
 import {getStatusBarHeight} from 'react-native-status-bar-height';
 import {getBottomSpace} from 'react-native-iphone-x-helper';
+import PropTypes from 'prop-types';
 export const ItemDiary = props => {
   // const socialType: SupportedSocialApps = 'facebook';
-  const {item, info} = props;
-  const [star, setStar] = React.useState(item.favorite);
-  const [modalVis, setModalVis] = React.useState(false);
-  const [modalDeleteVis, setModalDeleteVis] = React.useState(false);
-  const [modalDeleteConfirmVis, setModalDeleteConfirmVis] =
-    React.useState(false);
-  const [imageView, setImageView] = React.useState(false);
-  const [indexImage, setIndexImage] = React.useState(0);
-  const [displayData, setDisplayData] = React.useState(true);
+  const {item, info, deleteDiary} = props;
+  const [star, setStar] = useState(item.favorite);
+  const [modalVis, setModalVis] = useState(false);
+  const [modalDeleteVis, setModalDeleteVis] = useState(false);
+  const [modalDeleteConfirmVis, setModalDeleteConfirmVis] = useState(false);
+  const [imageView, setImageView] = useState(false);
+  const [indexImage, setIndexImage] = useState(0);
+  const [displayData, setDisplayData] = useState(true);
   const windowWidth = Dimensions.get('screen').width;
-  const [modalFullVis, setModalFullVis] = React.useState(false);
-  const [video, setVideo] = React.useState('');
-  const player = React.useRef();
+  const [modalFullVis, setModalFullVis] = useState(false);
+  const [video, setVideo] = useState('');
+  const player = useRef();
 
   useEffect(() => {
     setStar(item?.favorite);
@@ -75,8 +75,8 @@ export const ItemDiary = props => {
   };
 
   const modalVideo = e => {
-    setModalFullVis(true);
     setVideo(e);
+    setModalFullVis(true);
   };
 
   const callSocial = async (data, type) => {
@@ -329,11 +329,11 @@ export const ItemDiary = props => {
     setModalVis(true);
   };
 
-  const deleteDiary = async id => {
-    await deleteById(id);
-    await updateListDate(id);
-    setDisplayData(false);
-  };
+  // const deleteDiary = async id => {
+  //   await deleteById(id);
+  //   await updateListDate(id);
+  //   setDisplayData(false);
+  // };
 
   const createTwoButtonAlert = () => {
     setModalDeleteVis(false);
@@ -702,6 +702,16 @@ export const ItemDiary = props => {
       video,
     ],
   );
+};
+
+ItemDiary.defaultProps = {
+  deleteDiary: () => {},
+};
+
+ItemDiary.propTypes = {
+  item: PropTypes.object,
+  info: PropTypes.string,
+  deleteDiary: PropTypes.func,
 };
 
 const styles = StyleSheet.create({

@@ -141,8 +141,8 @@ export default function WriteDiary({navigation, route}) {
           }
           setRealm(realm);
           return () => {
-            realm.close();
             ac.abort();
+            realm.close();
           };
         })
         .catch(err => {
