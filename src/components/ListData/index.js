@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {ItemDiary} from '../ItemDiary';
 import {
   StyleSheet,
@@ -9,10 +9,12 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import PropTypes from 'prop-types';
 
 export const ViewDataList = props => {
+  const {data, deleteDiary} = props;
   const dateContainer = date => {
-    if (date === props.data[0].title) {
+    if (date === data[0].title) {
       return {
         alignSelf: 'center',
         alignItems: 'center',
@@ -39,7 +41,7 @@ export const ViewDataList = props => {
       numColumns={1}
       stickySectionHeadersEnabled={false}
       horizontal={false}
-      sections={props.data}
+      sections={props?.data}
       bounces={false}
       onEndReachedThreshold={0.7}
       removeClippedSubviews={true} // Unmount components when outside of window
@@ -80,7 +82,7 @@ export const ViewDataList = props => {
             <View style={dateContainer(section.title)}>
               <Text style={styles.textDate}>{section.title}</Text>
             </View>
-            {section.title === props.data[0].title ? (
+            {section.title === props.data[0].title && (
               <View style={styles.rightIconContainer}>
                 <TouchableOpacity
                   style={styles.setting}
@@ -91,14 +93,29 @@ export const ViewDataList = props => {
                   />
                 </TouchableOpacity>
               </View>
-            ) : null}
+            )}
           </View>
         );
       }}
-      renderItem={({item, i}) => <ItemDiary i={i} item={item} info={props} />}
+      renderItem={({item, i}) => (
+        <ItemDiary i={i} item={item} info={props} deleteDiary={deleteDiary} />
+      )}
       keyExtractor={(item, index) => index}
     />
   );
+};
+
+ViewDataList.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }),
+  data: PropTypes.array,
+  type: PropTypes.number,
+  deleteDiary: PropTypes.func,
+};
+
+ViewDataList.defaultProps = {
+  deleteDiary: () => {},
 };
 
 const styles = StyleSheet.create({

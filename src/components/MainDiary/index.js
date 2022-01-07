@@ -1,24 +1,41 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {formatData, getCurrentCalDate} from '../../realm/Common';
 import {ViewDataList} from '../ListData';
 import {BottomNav} from '../BtnBottom';
 import {EmptyComponents} from '../Empty';
-import {SafeAreaView, StyleSheet, View, ActivityIndicator, LogBox,} from 'react-native';
-import GestureRecognizer from 'react-native-swipe-gestures';
-import GestureRecognizerView, {swipeDirections} from 'rn-swipe-gestures';
-import {Diary_Schema, Init_Schema} from '../../realm/ExcuteData';
+import {AbortController} from 'abort-controller';
+import {
+  SafeAreaView,
+  StyleSheet,
+  View,
+  ActivityIndicator,
+  LogBox,
+} from 'react-native';
+import PropTypes from 'prop-types';
+import GestureRecognizerView from 'rn-swipe-gestures';
+import {
+  deleteById,
+  Diary_Schema,
+  Init_Schema,
+  updateListDate,
+} from '../../realm/ExcuteData';
 import {useFocusEffect} from '@react-navigation/native';
 import Realm from 'realm';
 import {Admob} from '../AdMobs/Admobs';
-import { isIndexedAccessType } from '@babel/types';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 export default function MainDiary({route, navigation}) {
-  const {index, type, updateData} = route.params;
-  const [loading, setLoading] = React.useState(true);
-  const [data, setData] = React.useState([]);
-  const [initData, setInitData] = React.useState([]);
-  const [iDay, setIDay] = React.useState(index);
-  const [evenDate, setEvenDate] = React.useState([]);
+  const {index, type, updateData} = route?.params ?? {
+    updateData: () => {},
+    index: 0,
+    type: 0,
+  };
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+  const [initData, setInitData] = useState([]);
+  const [iDay, setIDay] = useState(index);
+  const [evenDate, setEvenDate] = useState([]);
+  const [realm, setRealm] = useState(null);
 
   const startLoading = () => {
     setLoading(false);
@@ -27,12 +44,12 @@ export default function MainDiary({route, navigation}) {
     }, 200);
   };
 
-  const onSwipeLeft = gestureState => {
+  const onSwipeLeft = () => {
     let newIndex = iDay + 1;
     setSwipeData(newIndex);
   };
 
-  const onSwipeRight = gestureState => {
+  const onSwipeRight = () => {
     let newIndex = iDay - 1;
     setSwipeData(newIndex);
   };
@@ -44,9 +61,9 @@ export default function MainDiary({route, navigation}) {
     setData(formatData(initData, type, d, evenDate));
   };
 
-  const preparedData = () => {
+  const preparedData = async () => {
     setIDay(index);
-    Realm.open({
+    await Realm.open({
       schema: [Diary_Schema, Init_Schema], // predefined schema
       schemaVersion: 5,
     }).then(realm => {
@@ -71,7 +88,8 @@ export default function MainDiary({route, navigation}) {
       const result1 = realm.objects('diaryData').sorted('_id', true);
       let d = new Date(new Date().setDate(new Date().getDate() + index));
       setInitData(result1);
-      setData(formatData(result1, route.params.type, d, result[0].listDate));
+      setData(formatData(result1, route?.params?.type, d, result[0].listDate));
+      setRealm(realm);
       return () => {
         realm.close();
       };
@@ -79,30 +97,42 @@ export default function MainDiary({route, navigation}) {
   };
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       const ac = new AbortController();
       preparedData();
       return () => {
+        if (realm && !realm.isClosed) {
+          realm?.close();
+        }
         ac.abort();
       };
-    }, [index, route.params, type]),
+    }, [index, route?.params, type]),
   );
 
   useEffect(() => {
     const ac = new AbortController();
-    if (type === 1){
+    if (type === 1) {
       return;
     }
-    if (route.params.isWrite){
+    if (route?.params?.isWrite) {
       startLoading();
       preparedData();
     }
     LogBox.ignoreAllLogs();
     return () => {
       // willFocusSubscription;
+      if (realm && !realm.isClosed) {
+        realm?.close();
+      }
       ac.abort();
     };
-  }, [index, route.params, type]);
+  }, [index, route?.params, type]);
+
+  const deleteDiary = async id => {
+    await deleteById(id);
+    await updateListDate(id);
+    preparedData();
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -126,6 +156,7 @@ export default function MainDiary({route, navigation}) {
                 navigation={navigation}
                 index={index}
                 type={type}
+                deleteDiary={deleteDiary}
               />
             ) : (
               <EmptyComponents indexDay={iDay} navigation={navigation} />
@@ -143,10 +174,26 @@ export default function MainDiary({route, navigation}) {
   );
 }
 
+MainDiary.propTypes = {
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }),
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      index: PropTypes.number,
+      type: PropTypes.number,
+      updateData: PropTypes.func,
+      isWrite: PropTypes.bool,
+    }),
+  }),
+};
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
+    paddingTop: getStatusBarHeight(),
   },
   rightIconContainer: {
     width: 40,

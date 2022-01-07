@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import MainDiaryScreen from '../MainDiary';
 //import RandomDiaryScreen from '../Random';
 import SearchScreen from '../Search';
@@ -87,7 +87,7 @@ export default function Main() {
           index: 0,
           type: 0,
           isWrite: false,
-          updateData: (data, index) => updateData(data, index),
+          updateData: updateData,
         }}
       />
       <Stack.Screen name="Write" component={WriteDiarySreen} />

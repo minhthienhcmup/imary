@@ -1,6 +1,8 @@
 import {PermissionsAndroid, Platform} from 'react-native';
 import CameraRoll from '@react-native-community/cameraroll';
 
+export const isAndroid = Platform.OS === 'android';
+
 export const mergeListTag = (tagArr, listTag) => {
   let unionArr = [...listTag, ...tagArr];
   let result = unionArr.filter((item, pos) => unionArr.indexOf(item) === pos);
@@ -33,7 +35,6 @@ export const saveVideo = async path => {
   if (Platform.OS === 'android' && !(await hasAndroidPermission())) {
     return;
   }
-
   await CameraRoll.save(path, {album: 'imary'});
 };
 
@@ -74,6 +75,19 @@ export const searchData = (dairyText, tagText, colorArr, favorite, data) => {
   return dataArr;
 };
 
+export const getListVideoName = snapshot => {
+  let data = [];
+  snapshot?.forEach(e => {
+    if (e?.video && e.video !== '') {
+      let videoSrc = JSON.parse(e.video);
+      if (videoSrc?.[0]?.filename) {
+        data.push(videoSrc?.[0]?.filename);
+      }
+    }
+  });
+  return data;
+};
+
 export const formatDataCal = (snapshot, d) => {
   let data = [];
   snapshot.forEach(e => {
@@ -81,11 +95,12 @@ export const formatDataCal = (snapshot, d) => {
       return;
     }
 
-    let imageSrc = e.imageSrc !== '' ? JSON.parse(e.imageSrc) : [];
-
+    let imageSrc =
+      e?.imageSrc && e.imageSrc !== '' ? JSON.parse(e.imageSrc) : [];
+    // console.log(imageSrc);
     //let videoSrc = e.video !== '' ? JSON.parse(e.video) : '';
 
-    let videoSrc = e.video !== '' ? JSON.parse(e.video) : [];
+    let videoSrc = e?.video && e.video !== '' ? JSON.parse(e.video) : [];
     videoSrc = Array.isArray(videoSrc) ? videoSrc : [videoSrc];
     console.log(videoSrc);
     let diary = {
@@ -113,15 +128,16 @@ export const formatData = (snapshot, type, initDate, listDate) => {
   let date = '';
   let sumRandom = 0;
   let index = 0;
+  var initSnapshot;
 
-  initDate = initDate ? initDate : new Date();
+  let iDate = initDate ? initDate : new Date();
   if (type === 0) {
-    snapshot = setMainData(snapshot, initDate);
+    initSnapshot = setMainData(snapshot, iDate);
   }
 
   if (type === 0 || type === 1) {
-    if (listDate.indexOf(getCurrentCalDate(initDate)) === -1) {
-      dateBk = getCurrentDate(true, initDate) + getDay(initDate.getDay());
+    if (listDate.indexOf(getCurrentCalDate(iDate)) === -1) {
+      dateBk = getCurrentDate(true, iDate) + getDay(iDate.getDay());
       if (getCurrentDate(true) + getDay(new Date().getDay()) === dateBk) {
         date = 'Today　' + dateBk;
       } else {
@@ -138,7 +154,7 @@ export const formatData = (snapshot, type, initDate, listDate) => {
   }
   dateBk = '';
 
-  snapshot.forEach(element => {
+  initSnapshot?.forEach(element => {
     if (dateBk !== '' && dateBk !== element.fullDate) {
       if (getCurrentDate(true) + getDay(new Date().getDay()) === dateBk) {
         date = 'Today　' + dateBk;
@@ -146,7 +162,7 @@ export const formatData = (snapshot, type, initDate, listDate) => {
         date = dateBk;
       }
       let r =
-        getCurrentDate(true, initDate) + getDay(initDate.getDay()) === dateBk
+        getCurrentDate(true, iDate) + getDay(iDate.getDay()) === dateBk
           ? 0
           : (sumRandom / index) * Math.random();
 
@@ -166,25 +182,28 @@ export const formatData = (snapshot, type, initDate, listDate) => {
       data.push(objDate);
     }
 
-    let imageSrc = element.imageSrc !== '' ? JSON.parse(element.imageSrc) : [];
+    let imageSrc =
+      element?.imageSrc && element?.imageSrc !== ''
+        ? JSON.parse(element.imageSrc)
+        : [];
     imageSrc = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
 
-    let videoSrc = element.video !== '' ? JSON.parse(element.video) : [];
+    let videoSrc =
+      element?.video && element?.video !== '' ? JSON.parse(element.video) : [];
     videoSrc = Array.isArray(videoSrc) ? videoSrc : [videoSrc];
-
+    console.log(videoSrc);
     let diary = {
-      content: element.content,
-      color: element.color,
-      favorite: element.favorite,
-      updateTime: element.time,
-      id: element._id,
-      tagArr: element.tag,
+      content: element?.content,
+      color: element?.color ?? '#F5F5F5',
+      favorite: element?.favorite,
+      updateTime: element?.time,
+      id: element?._id,
+      tagArr: element?.tag,
       imageSrc: imageSrc,
       videoSrc: videoSrc,
     };
     diaryArr.push(diary);
     dateBk = element.fullDate;
-
     sumRandom = sumRandom + element.r;
     index = index + 1;
   });
@@ -197,7 +216,7 @@ export const formatData = (snapshot, type, initDate, listDate) => {
     }
 
     let r =
-      getCurrentDate(true, initDate) + getDay(initDate.getDay()) === dateBk
+      getCurrentDate(true, iDate) + getDay(iDate.getDay()) === dateBk
         ? 0
         : (sumRandom / index) * Math.random();
 
@@ -342,9 +361,12 @@ function getArrDate(initDate) {
 }
 
 const setMainData = (data, initDate) => {
+  if (!data) {
+    return;
+  }
   let dataArr = [];
   let dateArr = getArrDate(initDate);
-  data.forEach(e => {
+  data?.forEach(e => {
     let index = dateArr[0].indexOf(e._id.substr(0, 8));
     if (index !== -1) {
       let item = {
@@ -425,7 +447,7 @@ export const setMarkedDate = (
 
   if (type === 0 || type === 1) {
     lastArr.map(day => {
-      if (evenArr.length > 0 && evenArr.indexOf(day) !== -1) {
+      if (evenArr?.length > 0 && evenArr?.indexOf(day) !== -1) {
         markDateSat = {
           ...markDateSat,
           [day]: {
@@ -452,7 +474,7 @@ export const setMarkedDate = (
       }
     });
     firstArr.map(day => {
-      if (evenArr.length > 0 && evenArr.indexOf(day) !== -1) {
+      if (evenArr?.length > 0 && evenArr.indexOf(day) !== -1) {
         markDateSun = {
           ...markDateSun,
           [day]: {
@@ -480,7 +502,7 @@ export const setMarkedDate = (
     });
 
     if (new Date(td).getDay() === 0) {
-      evenArr.length > 0 && evenArr.indexOf(td) !== -1
+      evenArr?.length > 0 && evenArr.indexOf(td) !== -1
         ? (markToday = {
             ...markToday,
             [td]: {
@@ -510,7 +532,7 @@ export const setMarkedDate = (
             },
           });
     } else if (new Date(td).getDay() === 6) {
-      evenArr.length > 0 && evenArr.indexOf(td) !== -1
+      evenArr?.length > 0 && evenArr.indexOf(td) !== -1
         ? (markToday = {
             ...markToday,
             [td]: {
@@ -540,7 +562,7 @@ export const setMarkedDate = (
             },
           });
     } else {
-      evenArr.length > 0 && evenArr.indexOf(td) !== -1
+      evenArr?.length > 0 && evenArr.indexOf(td) !== -1
         ? (markToday = {
             ...markToday,
             [td]: {
@@ -572,7 +594,7 @@ export const setMarkedDate = (
 
   if (type === 0 || type === 2) {
     if (new Date(active).getDay() === 0) {
-      evenArr.length > 0 && evenArr.indexOf(active) !== -1
+      evenArr?.length > 0 && evenArr.indexOf(active) !== -1
         ? (markActiveDay = {
             ...markActiveDay,
             [active]: {
@@ -604,7 +626,7 @@ export const setMarkedDate = (
             },
           });
     } else if (new Date(active).getDay() === 6) {
-      evenArr.length > 0 && evenArr.indexOf(active) !== -1
+      evenArr?.length > 0 && evenArr.indexOf(active) !== -1
         ? (markActiveDay = {
             ...markActiveDay,
             [active]: {
@@ -636,7 +658,7 @@ export const setMarkedDate = (
             },
           });
     } else {
-      evenArr.length > 0 && evenArr.indexOf(active) !== -1
+      evenArr?.length > 0 && evenArr.indexOf(active) !== -1
         ? (markActiveDay = {
             ...markActiveDay,
             [active]: {
@@ -671,7 +693,7 @@ export const setMarkedDate = (
     markDateSat,
     markToday,
     markActiveDay,
-  )
+  );
 
   return {
     markDateEvent: markDateEvent,
@@ -689,12 +711,12 @@ export const convertMiniSecondToTime = duration => {
     minutes = Math.floor((duration / (1000 * 60)) % 60),
     hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
 
-  hours =(hours < 10) ? "0" + hours : hours;
-  minutes = (minutes < 10) ? "0" + minutes : minutes;
-  seconds = (seconds < 10) ? "0" + seconds : seconds;
+  hours = hours < 10 ? '0' + hours : hours;
+  minutes = minutes < 10 ? '0' + minutes : minutes;
+  seconds = seconds < 10 ? '0' + seconds : seconds;
 
-  if (hours === "00") {
-    return minutes + ":" + seconds;
+  if (hours === '00') {
+    return minutes + ':' + seconds;
   }
-  return hours + ":" + minutes + ":" + seconds;
-}
+  return hours + ':' + minutes + ':' + seconds;
+};

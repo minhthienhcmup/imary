@@ -31,9 +31,12 @@
 		1A929DE1274760A500AA99CA /* WidgetWriteDiary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A74CE1426C15C9600DB26D5 /* WidgetWriteDiary.swift */; };
 		1AB1646B26ABE06F008AADB7 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1AB1646A26ABE06F008AADB7 /* GoogleService-Info.plist */; };
 		1AC6EFF826F8EB2A00F904BA /* yugothib.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1AC6EFF726F8EB2A00F904BA /* yugothib.ttf */; };
-		1BB4BC0FD2C251478C04B7CC /* libPods-ImaryProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DDAA723605E09F9F2D446152 /* libPods-ImaryProject.a */; };
+		2A106F1E27678ABB00E4282A /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A106F1D27678ABB00E4282A /* CloudKit.framework */; };
+		2A106F2227678C5600E4282A /* BackupModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A106F2127678C5600E4282A /* BackupModule.m */; };
+		2A106F2527678C7200E4282A /* BackupModuleHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A106F2427678C7200E4282A /* BackupModuleHelper.swift */; };
+		682D4CDFFEC663017C325636 /* libPods-ImaryProject.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7CABA3D1B341816CE88E76C3 /* libPods-ImaryProject.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		CB60BE5EAEAFDCCF94DF743C /* libPods-ImaryProject-ImaryProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E013EE8553DB9C530126B13 /* libPods-ImaryProject-ImaryProjectTests.a */; };
+		DC00A9F9FCC5F073871276F1 /* libPods-ImaryProject-ImaryProjectTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B72DB65309D8AA8E98564329 /* libPods-ImaryProject-ImaryProjectTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,13 +112,18 @@
 		1A92A1E32761CFA100AA99CA /* libreact-native-widget-bridge.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libreact-native-widget-bridge.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB1646A26ABE06F008AADB7 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "ImaryProject/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		1AC6EFF726F8EB2A00F904BA /* yugothib.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = yugothib.ttf; sourceTree = "<group>"; };
+		2A106F1D27678ABB00E4282A /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		2A106F2027678C5600E4282A /* BackupModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BackupModule.h; sourceTree = "<group>"; };
+		2A106F2127678C5600E4282A /* BackupModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BackupModule.m; sourceTree = "<group>"; };
+		2A106F2327678C7100E4282A /* ImaryProject-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ImaryProject-Bridging-Header.h"; sourceTree = "<group>"; };
+		2A106F2427678C7200E4282A /* BackupModuleHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupModuleHelper.swift; sourceTree = "<group>"; };
 		2A9D3556CE6B8BC4E949A962 /* Pods-ImaryProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImaryProject.release.xcconfig"; path = "Target Support Files/Pods-ImaryProject/Pods-ImaryProject.release.xcconfig"; sourceTree = "<group>"; };
-		5E013EE8553DB9C530126B13 /* libPods-ImaryProject-ImaryProjectTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ImaryProject-ImaryProjectTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CABA3D1B341816CE88E76C3 /* libPods-ImaryProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ImaryProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = ImaryProject/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		926647621CB11B3500312149 /* Pods-ImaryProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImaryProject.debug.xcconfig"; path = "Target Support Files/Pods-ImaryProject/Pods-ImaryProject.debug.xcconfig"; sourceTree = "<group>"; };
 		AA22C79FA8EAF3F20276735B /* Pods-ImaryProject-ImaryProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImaryProject-ImaryProjectTests.release.xcconfig"; path = "Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests.release.xcconfig"; sourceTree = "<group>"; };
+		B72DB65309D8AA8E98564329 /* libPods-ImaryProject-ImaryProjectTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ImaryProject-ImaryProjectTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D649E25AA24F9B85E4DBA1D6 /* Pods-ImaryProject-ImaryProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ImaryProject-ImaryProjectTests.debug.xcconfig"; path = "Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
-		DDAA723605E09F9F2D446152 /* libPods-ImaryProject.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ImaryProject.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -124,7 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CB60BE5EAEAFDCCF94DF743C /* libPods-ImaryProject-ImaryProjectTests.a in Frameworks */,
+				DC00A9F9FCC5F073871276F1 /* libPods-ImaryProject-ImaryProjectTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,10 +140,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2A106F1E27678ABB00E4282A /* CloudKit.framework in Frameworks */,
 				1A26CE9A272531290095C520 /* libRNShare.a in Frameworks */,
-				1BB4BC0FD2C251478C04B7CC /* libPods-ImaryProject.a in Frameworks */,
 				1A26CE96272530C10095C520 /* Social.framework in Frameworks */,
 				1A26CE98272530E00095C520 /* MessageUI.framework in Frameworks */,
+				682D4CDFFEC663017C325636 /* libPods-ImaryProject.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -223,9 +232,21 @@
 			path = WidgetWriteDiary;
 			sourceTree = "<group>";
 		};
+		2A106F1F27678BE500E4282A /* backupModule */ = {
+			isa = PBXGroup;
+			children = (
+				2A106F2027678C5600E4282A /* BackupModule.h */,
+				2A106F2127678C5600E4282A /* BackupModule.m */,
+				2A106F2427678C7200E4282A /* BackupModuleHelper.swift */,
+				2A106F2327678C7100E4282A /* ImaryProject-Bridging-Header.h */,
+			);
+			path = backupModule;
+			sourceTree = "<group>";
+		};
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2A106F1D27678ABB00E4282A /* CloudKit.framework */,
 				1A92A1E32761CFA100AA99CA /* libreact-native-widget-bridge.a */,
 				1A92A0EB27605E2D00AA99CA /* libreact-native-widgetkit.a */,
 				1A92A08F2760597100AA99CA /* libreact-native-widgetkit.a */,
@@ -233,10 +254,10 @@
 				1A26CE97272530E00095C520 /* MessageUI.framework */,
 				1A26CE95272530C10095C520 /* Social.framework */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				DDAA723605E09F9F2D446152 /* libPods-ImaryProject.a */,
-				5E013EE8553DB9C530126B13 /* libPods-ImaryProject-ImaryProjectTests.a */,
 				1A74CE0F26C15C9600DB26D5 /* WidgetKit.framework */,
 				1A74CE1126C15C9600DB26D5 /* SwiftUI.framework */,
+				7CABA3D1B341816CE88E76C3 /* libPods-ImaryProject.a */,
+				B72DB65309D8AA8E98564329 /* libPods-ImaryProject-ImaryProjectTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -251,6 +272,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				2A106F1F27678BE500E4282A /* backupModule */,
 				1A929EFB2759BFC300AA99CA /* WidgetCameraDiaryExtension.entitlements */,
 				1A929EE62759BF9500AA99CA /* WidgetWriteDiaryExtension.entitlements */,
 				1A733D5326E4A01D0027EB34 /* Resources */,
@@ -301,8 +323,8 @@
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				22C5A02EDB7359D33E348C69 /* [CP] Embed Pods Frameworks */,
-				E0A5E89151BC972299A26A24 /* [CP] Copy Pods Resources */,
+				F02BAD6973431937C6A3FDC2 /* [CP] Embed Pods Frameworks */,
+				EEAB24469E5694DF0E84FE63 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -324,9 +346,9 @@
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				7B9FA1910B5A13ED56793275 /* [CP] Embed Pods Frameworks */,
-				DC817A4983F64A8A4416EADA /* [CP] Copy Pods Resources */,
 				1A74CE1F26C15C9E00DB26D5 /* Embed App Extensions */,
+				25EA85A43EC207E483EC5936 /* [CP] Embed Pods Frameworks */,
+				59D930ACC4DDADCB6238B11B /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -388,7 +410,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1300;
 					};
 					1A07A6D526CAAF1B00C4F1A6 = {
 						CreatedOnToolsVersion = 12.0.1;
@@ -494,21 +516,38 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		22C5A02EDB7359D33E348C69 /* [CP] Embed Pods Frameworks */ = {
+		25EA85A43EC207E483EC5936 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		59D930ACC4DDADCB6238B11B /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		6B84B2A28FE2AABAA3107037 /* [CP] Check Pods Manifest.lock */ = {
@@ -533,41 +572,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7B9FA1910B5A13ED56793275 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		DC817A4983F64A8A4416EADA /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImaryProject/Pods-ImaryProject-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		E0A5E89151BC972299A26A24 /* [CP] Copy Pods Resources */ = {
+		EEAB24469E5694DF0E84FE63 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -582,6 +587,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F02BAD6973431937C6A3FDC2 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-ImaryProject-ImaryProjectTests/Pods-ImaryProject-ImaryProjectTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -619,6 +641,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
+				2A106F2527678C7200E4282A /* BackupModuleHelper.swift in Sources */,
+				2A106F2227678C5600E4282A /* BackupModule.m in Sources */,
 				1A07A6E126CAAF1D00C4F1A6 /* WidgetCameraDiary.intentdefinition in Sources */,
 				1A74CECC26C165CF00DB26D5 /* WidgetWriteDiary.intentdefinition in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
@@ -668,7 +692,9 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D649E25AA24F9B85E4DBA1D6 /* Pods-ImaryProject-ImaryProjectTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = TM56PYA695;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -695,8 +721,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = AA22C79FA8EAF3F20276735B /* Pods-ImaryProject-ImaryProjectTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = TM56PYA695;
 				INFOPLIST_FILE = ImaryProjectTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -719,12 +747,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 926647621CB11B3500312149 /* Pods-ImaryProject.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ImaryProject/ImaryProject.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = TM56PYA695;
 				ENABLE_BITCODE = NO;
@@ -742,7 +769,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject;
 				PRODUCT_NAME = ImaryProject;
-				PROVISIONING_PROFILE_SPECIFIER = "Kenichiro Naritomi";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "backupModule/ImaryProject-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -754,12 +782,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2A9D3556CE6B8BC4E949A962 /* Pods-ImaryProject.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = ImaryProject/ImaryProject.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = TM56PYA695;
 				INFOPLIST_FILE = ImaryProject/Info.plist;
@@ -776,7 +803,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject;
 				PRODUCT_NAME = ImaryProject;
-				PROVISIONING_PROFILE_SPECIFIER = "Kenichiro Naritomi";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "backupModule/ImaryProject-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -795,8 +823,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = WidgetCameraDiaryExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = TM56PYA695;
@@ -819,7 +847,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetCameraDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = WidgetCameraDiaryExtension;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -840,8 +868,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = WidgetCameraDiaryExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -864,7 +892,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetCameraDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = WidgetCameraDiaryExtension;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
@@ -884,8 +912,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = WidgetWriteDiaryExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = TM56PYA695;
@@ -907,7 +935,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetWriteDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = WidgetWriteDiaryExtension;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -928,8 +956,8 @@
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_ENTITLEMENTS = WidgetWriteDiaryExtension.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 4;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -951,7 +979,7 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.reactjs.native.example.ImaryProject.WidgetWriteDiary;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = WidgetWriteDiaryExtension;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SKIP_INSTALL = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -1017,7 +1045,6 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = YES;
@@ -1077,7 +1104,6 @@
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"\"$(TOOLCHAIN_DIR)/usr/lib/swift/$(PLATFORM_NAME)\"",
-					"\"$(TOOLCHAIN_DIR)/usr/lib/swift-5.0/$(PLATFORM_NAME)\"",
 					"\"$(inherited)\"",
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;

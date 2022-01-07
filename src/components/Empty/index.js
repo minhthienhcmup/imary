@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import PropTypes from 'prop-types';
 import {getCurrentDate, getDay} from '../../realm/Common';
 const windowWidth = Dimensions.get('screen').width;
 export const EmptyComponents = props => {
@@ -33,10 +34,17 @@ export const EmptyComponents = props => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={styles.diaryContent}>
-      </View>
+      <View style={styles.diaryContent} />
     </View>
   );
+};
+
+EmptyComponents.propTypes = {
+  indexDay: PropTypes.number,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }),
 };
 
 const styles = StyleSheet.create({
@@ -61,11 +69,11 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  dateContainer:{
+  dateContainer: {
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',
     width: Dimensions.get('window').width - 40,
     paddingLeft: 40,
-  }
+  },
 });

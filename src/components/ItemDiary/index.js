@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {useEffect, useMemo, useState, useRef} from 'react';
 import {
   StyleSheet,
   View,
@@ -7,40 +7,38 @@ import {
   TouchableWithoutFeedback,
   Dimensions,
   TouchableOpacity,
-  TouchableHighlight,
   Alert,
   Platform,
 } from 'react-native';
 import Clipboard from '@react-native-community/clipboard';
-import Share, { SupportedSocialApps } from 'react-native-share';
+import Share, {SupportedSocialApps} from 'react-native-share';
 import Modal from 'react-native-modal';
 import VideoPlayer from 'react-native-video-player';
 import {setMarkedDate, convertMiniSecondToTime} from '../../realm/Common';
-import {updateData, deleteById, updateListDate} from '../../realm/ExcuteData';
+import {updateData} from '../../realm/ExcuteData';
 import ImageView from 'react-native-image-viewing';
 import Video from 'react-native-video';
 //import RNFetchBlob from 'rn-fetch-blob';
-import CameraRoll from '@react-native-community/cameraroll';
-import { forScaleFromCenterAndroid } from '@react-navigation/stack/lib/typescript/src/TransitionConfigs/CardStyleInterpolators';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
+import {getBottomSpace} from 'react-native-iphone-x-helper';
+import PropTypes from 'prop-types';
 export const ItemDiary = props => {
-  const socialType: SupportedSocialApps = "facebook";
-  const {item, info} = props;
-  const [star, setStar] = React.useState(item.favorite);
-  const [modalVis, setModalVis] = React.useState(false);
-  const [modalDeleteVis, setModalDeleteVis] = React.useState(false);
-  const [modalDeleteConfirmVis, setModalDeleteConfirmVis] =
-    React.useState(false);
-  const [imageView, setImageView] = React.useState(false);
-  const [indexImage, setIndexImage] = React.useState(0);
-  const [displayData, setDisplayData] = React.useState(true);
+  // const socialType: SupportedSocialApps = 'facebook';
+  const {item, info, deleteDiary} = props;
+  const [star, setStar] = useState(item.favorite);
+  const [modalVis, setModalVis] = useState(false);
+  const [modalDeleteVis, setModalDeleteVis] = useState(false);
+  const [modalDeleteConfirmVis, setModalDeleteConfirmVis] = useState(false);
+  const [imageView, setImageView] = useState(false);
+  const [indexImage, setIndexImage] = useState(0);
+  const [displayData, setDisplayData] = useState(true);
   const windowWidth = Dimensions.get('screen').width;
-  const [modalFullVis, setModalFullVis] = React.useState(false);
-  const [video, setVideo] = React.useState('');
-  const windowHeight = Dimensions.get('screen').height;
-  const player = React.useRef();
+  const [modalFullVis, setModalFullVis] = useState(false);
+  const [video, setVideo] = useState('');
+  const player = useRef();
 
   useEffect(() => {
-    setStar(item.favorite);
+    setStar(item?.favorite);
     setDisplayData(true);
   }, [item]);
 
@@ -66,10 +64,10 @@ export const ItemDiary = props => {
   };
   const onchangeStar = async id => {
     await updateData(id, !star);
-    if (info.type === 2 && info.checkStar) {
+    if (info?.type === 2 && info?.checkStar) {
       info.navigation.navigate({
         name: 'Search',
-        params: {index: info.index, type: info.type},
+        params: {index: info?.index, type: info?.type},
       });
       return;
     }
@@ -77,8 +75,8 @@ export const ItemDiary = props => {
   };
 
   const modalVideo = e => {
-    setModalFullVis(true);
     setVideo(e);
+    setModalFullVis(true);
   };
 
   const callSocial = async (data, type) => {
@@ -94,11 +92,11 @@ export const ItemDiary = props => {
       //   });
       // }
 
-      data.imageSrc.forEach(e => {
-        galleryArr.push(e.uri);
+      data?.imageSrc?.forEach(e => {
+        galleryArr.push(e?.uri);
       });
 
-      data.videoSrc.forEach(async (e) => {
+      data?.videoSrc?.forEach(async e => {
         // if (Platform.OS === 'ios' && type === 2) {
         //   const res = await RNFetchBlob.config({
         //     fileCache : true,
@@ -111,16 +109,16 @@ export const ItemDiary = props => {
         //   await RNFetchBlob.fs.unlink(filePath);
         //   galleryArr.push(url);
         // } else {
-          galleryArr.push(e.path);
+        galleryArr.push(e?.path);
         // }
       });
 
-      data.tagArr.forEach(e => {
+      data?.tagArr?.forEach(e => {
         tags = tags.concat(e + ' ');
       });
 
       const content =
-        tags.trim() === ''
+        tags?.trim() === ''
           ? data.content
           : data.content + '\n' + tags.trimEnd();
 
@@ -157,7 +155,7 @@ export const ItemDiary = props => {
               'com.google.GooglePlus.ShareExtension',
               'com.tumblr.tumblr.Share-With-Tumblr',
               'net.whatsapp.WhatsApp.ShareExtension',
-             ]
+            ],
           };
           await Share.open(shareOptions);
         } else {
@@ -185,7 +183,7 @@ export const ItemDiary = props => {
         //   };
         // }
         if (Platform.OS === 'android') {
-          if (data.videoSrc.length > 0 && data.imageSrc.length === 0) {
+          if (data?.videoSrc?.length > 0 && data?.imageSrc?.length > 0) {
             shareOptions = {
               message: content,
               url: galleryArr[0],
@@ -228,10 +226,10 @@ export const ItemDiary = props => {
                 'com.google.GooglePlus.ShareExtension',
                 'com.tumblr.tumblr.Share-With-Tumblr',
                 'net.whatsapp.WhatsApp.ShareExtension',
-               ]
+              ],
             };
           } else {
-            if (data.videoSrc.length > 0 && data.imageSrc.length === 0) {
+            if (data?.videoSrc?.length > 0 && data?.imageSrc?.length > 0) {
               shareOptions = {
                 message: content,
                 url: galleryArr[0],
@@ -258,7 +256,7 @@ export const ItemDiary = props => {
                   'com.google.GooglePlus.ShareExtension',
                   'com.tumblr.tumblr.Share-With-Tumblr',
                   'net.whatsapp.WhatsApp.ShareExtension',
-                ]
+                ],
               };
             } else {
               shareOptions = {
@@ -287,7 +285,7 @@ export const ItemDiary = props => {
                   'com.google.GooglePlus.ShareExtension',
                   'com.tumblr.tumblr.Share-With-Tumblr',
                   'net.whatsapp.WhatsApp.ShareExtension',
-                ]
+                ],
               };
             }
           }
@@ -331,11 +329,11 @@ export const ItemDiary = props => {
     setModalVis(true);
   };
 
-  const deleteDiary = async id => {
-    await deleteById(id);
-    await updateListDate(id);
-    setDisplayData(false);
-  };
+  // const deleteDiary = async id => {
+  //   await deleteById(id);
+  //   await updateListDate(id);
+  //   setDisplayData(false);
+  // };
 
   const createTwoButtonAlert = () => {
     setModalDeleteVis(false);
@@ -354,11 +352,15 @@ export const ItemDiary = props => {
   };
 
   const navigateToCal = id => {
-    if (info.type !== 2 || (info.type === 2 && info.index !== 0)) {
+    if (info?.type !== 2 || (info?.type === 2 && info?.index > 0)) {
       return;
     }
     let date =
-      id.substring(0, 4) + '-' + id.substring(4, 6) + '-' + id.substring(6, 8);
+      id?.substring(0, 4) +
+      '-' +
+      id?.substring(4, 6) +
+      '-' +
+      id?.substring(6, 8);
 
     let m = new Date(date).getMonth() + 1;
     let y = new Date(date).getFullYear();
@@ -384,14 +386,14 @@ export const ItemDiary = props => {
     let initDate = {
       arrSun: arryListFirst,
       arrSat: arryListLast,
-      eventDate: props.mainData[0].listDate,
+      eventDate: props?.mainData?.[0]?.listDate,
     };
 
     let objDate = setMarkedDate(
       date,
       arryListLast,
       arryListFirst,
-      props.mainData[0].listDate,
+      props?.mainData?.[0]?.listDate,
       0,
     );
 
@@ -416,13 +418,13 @@ export const ItemDiary = props => {
         onLongPress={() => setModalDeleteVis(true)}
         onPress={() => navigateToCal(item.id)}
         activeOpacity={0.7}>
-        {item !== null && displayData ? (
+        {item && displayData && (
           <View style={[styles.containerInfo, {backgroundColor: item.color}]}>
             <Text style={styles.textTime}>{item.updateTime}</Text>
             <View style={styles.diaryContent}>
               <View style={styles.imageContainer}>
                 <ImageView
-                  images={item.imageSrc}
+                  images={item?.imageSrc}
                   imageIndex={indexImage}
                   visible={imageView}
                   onRequestClose={() => setImageView(false)}
@@ -435,18 +437,18 @@ export const ItemDiary = props => {
                         /
                       </Text>
                       <Text style={[styles.footerText, {marginLeft: 5}]}>
-                        {item.imageSrc.length}
+                        {item?.imageSrc?.length}
                       </Text>
                     </View>
                   )}
                 />
-                {item.imageSrc.map((e, index) => {
+                {item?.imageSrc?.map((e, index) => {
                   return (
                     <View key={index} style={styles.imageDiary}>
                       <TouchableOpacity onPress={() => setImageListView(index)}>
                         <Image
                           source={{uri: e.uri}}
-                          style={getImageStyle(index, item.imageSrc.length)}
+                          style={getImageStyle(index, item?.imageSrc?.length)}
                         />
                       </TouchableOpacity>
                     </View>
@@ -469,14 +471,14 @@ export const ItemDiary = props => {
                 </View>
               ) : null} */}
               <View style={styles.imageContainer}>
-                {item.videoSrc.map((e, index) => {
+                {item?.videoSrc?.map((e, index) => {
                   return (
                     <View key={index} style={styles.imageDiary}>
                       <TouchableOpacity onPress={() => modalVideo(e)}>
                         <Video
-                          source={{uri: e.path}} // Can be a URL or a local file.
+                          source={{uri: e?.path}} // Can be a URL or a local file.
                           ref={player}
-                          style={getImageStyle(index, item.videoSrc.length)}
+                          style={getImageStyle(index, item?.videoSrc?.length)}
                           paused={true}
                           onLoad={() => {
                             player.current.seek(0); // this will set first frame of video as thumbnail
@@ -497,7 +499,7 @@ export const ItemDiary = props => {
                               fontSize: 13,
                               fontWeight: 'bold',
                             }}>
-                            {convertMiniSecondToTime(e.duration)}
+                            {convertMiniSecondToTime(e?.duration)}
                           </Text>
                           <Image
                             style={{marginLeft: 5, height: 35, width: 35}}
@@ -509,19 +511,28 @@ export const ItemDiary = props => {
                   );
                 })}
                 <Modal
-                  style={{margin: 0, backgroundColor: 'black'}}
+                  style={{
+                    flex: 1,
+                    margin: 0,
+                    backgroundColor: 'black',
+                  }}
                   isVisible={modalFullVis}
                   animationInTiming={300}
                   animationOutTiming={300}
                   backdropTransitionOutTiming={0}
                   onBackdropPress={() => setModalFullVis(false)}
                   onRequestClose={() => setModalFullVis(false)}>
-                  <View style={{flex: 1}}>
+                  <View
+                    style={{
+                      flex: 1,
+                      paddingTop: getStatusBarHeight(),
+                      paddingBottom: getBottomSpace(),
+                    }}>
                     <VideoPlayer
                       video={{
-                        uri: video.path,
+                        uri: video?.path,
                       }}
-                      style={{width: windowWidth, height: windowHeight * 0.95}}
+                      style={{width: windowWidth, height: '100%'}}
                       resizeMode="contain"
                       autoplay={true}
                       disableControlsAutoHide
@@ -538,20 +549,20 @@ export const ItemDiary = props => {
                   </View>
                 </Modal>
               </View>
-              {item.content.trim() !== '' ? (
-                <Text style={styles.textDiary}>{item.content}</Text>
-              ) : null}
-              <View style={styles.tagContainer}>
-                {item.tagArr !== null && item.tagArr.length > 0
-                  ? item.tagArr.map((data, index) => {
-                      return (
-                        <View key={index}>
-                          <Text style={styles.tag}>{data}</Text>
-                        </View>
-                      );
-                    })
-                  : null}
-              </View>
+              {!!item?.content?.trim() && (
+                <Text style={styles.textDiary}>{item?.content}</Text>
+              )}
+              {item?.tagArr?.length > 0 && (
+                <View style={styles.tagContainer}>
+                  {item?.tagArr?.map((data, index) => {
+                    return (
+                      <View key={index}>
+                        <Text style={styles.tag}>{data}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
+              )}
             </View>
             <View style={styles.favorite}>
               {/* <TouchableWithoutFeedback onPress={() => setModalVis(!modalVis)}>
@@ -561,7 +572,7 @@ export const ItemDiary = props => {
             />
           </TouchableWithoutFeedback> */}
               <TouchableWithoutFeedback
-                onPress={e => {
+                onPress={() => {
                   onchangeStar(item.id);
                 }}>
                 {star ? (
@@ -621,17 +632,18 @@ export const ItemDiary = props => {
                         <Text>Facebook</Text>
                       </View>
                     </TouchableOpacity>
-                    {item.videoSrc !== '' || item.imageSrc.length > 0 ? (
-                      <TouchableOpacity onPress={() => callSocial(item, 2)}>
-                        <View style={{alignItems: 'center', padding: 10}}>
-                          <Image
-                            source={require('../../assets/instagram.png')}
-                            style={{height: 50, width: 50}}
-                          />
-                          <Text>Instagram</Text>
-                        </View>
-                      </TouchableOpacity>
-                    ) : null}
+                    {(item?.videoSrc && item?.videoSrc !== '') ||
+                      (item?.imageSrc?.length > 0 && (
+                        <TouchableOpacity onPress={() => callSocial(item, 2)}>
+                          <View style={{alignItems: 'center', padding: 10}}>
+                            <Image
+                              source={require('../../assets/instagram.png')}
+                              style={{height: 50, width: 50}}
+                            />
+                            <Text>Instagram</Text>
+                          </View>
+                        </TouchableOpacity>
+                      ))}
                   </View>
                   <View style={{marginBottom: 10}}>
                     <Text style={styles.textGuide}>
@@ -649,7 +661,7 @@ export const ItemDiary = props => {
                   onPress={() => openShareModal()}>
                   <View style={styles.imageNav}>
                     <Image
-                      source={require('../../assets/gradient.png')}
+                      source={require('../../assets/Gradient.png')}
                       style={styles.imageGadient}
                     />
                     <Image
@@ -663,7 +675,7 @@ export const ItemDiary = props => {
                   onPress={() => createTwoButtonAlert()}>
                   <View style={styles.imageNav}>
                     <Image
-                      source={require('../../assets/gradient.png')}
+                      source={require('../../assets/Gradient.png')}
                       style={styles.imageGadient}
                     />
                     <Image
@@ -675,7 +687,7 @@ export const ItemDiary = props => {
               </View>
             </Modal>
           </View>
-        ) : null}
+        )}
       </TouchableOpacity>
     ),
     [
@@ -690,6 +702,16 @@ export const ItemDiary = props => {
       video,
     ],
   );
+};
+
+ItemDiary.defaultProps = {
+  deleteDiary: () => {},
+};
+
+ItemDiary.propTypes = {
+  item: PropTypes.object,
+  info: PropTypes.string,
+  deleteDiary: PropTypes.func,
 };
 
 const styles = StyleSheet.create({
@@ -831,7 +853,7 @@ const styles = StyleSheet.create({
   closeVideoModal: {
     position: 'absolute',
     right: 5,
-    top: 25,
+    top: getStatusBarHeight(),
     width: 30,
     height: 30,
   },

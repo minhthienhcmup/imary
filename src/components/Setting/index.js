@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -9,21 +9,34 @@ import {
   TouchableOpacity,
   Dimensions,
   Linking,
+  NativeModules,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import PasswordGesture from 'react-native-gesture-password';
 import Modal from 'react-native-modal';
+import Realm from 'realm';
 import {
   Diary_Schema,
   Init_Schema,
   updateUsePass,
   updatePass,
   updateStartDay,
+  updateVideoPaths,
 } from '../../realm/ExcuteData';
-import {getFullDay} from '../../realm/Common';
+import {
+  getFullDay,
+  getListVideoName,
+  hasAndroidPermission,
+  isAndroid,
+} from '../../realm/Common';
 import ToggleSwitch from 'toggle-switch-react-native';
 import ImagePicker from 'react-native-image-crop-picker';
 import DefaultPreference from 'react-native-default-preference';
+import PropTypes from 'prop-types';
+import {AbortController} from 'abort-controller';
+import {getStatusBarHeight} from 'react-native-status-bar-height';
 
 const appGroupIdentifier = 'group.com.imary';
 
@@ -53,22 +66,25 @@ const data = [
 ];
 
 export default function Setting({navigation}) {
-  const [pass, setPass] = React.useState('');
-  const [captured, setCaptured] = React.useState(true);
-  const [checked, setChecked] = React.useState(false);
-  const [startDay, setStartDay] = React.useState(getFullDay(0));
-  const [modalVis, setModalVis] = React.useState(false);
-  const [modalBGVis, setModalBGVis] = React.useState(false);
-  const [message, setMessage] = React.useState('パターンを入力してください');
-  const [status, setStatus] = React.useState('normal');
-  const [backgroundDefault, setBackgroundDefault] = React.useState('画像を選択');
-  const [resourcePath, setResourcePath] = React.useState([]);
-  const [diaryData, setDiaryData] = React.useState(null);
+  const [pass, setPass] = useState('');
+  const [captured, setCaptured] = useState(true);
+  const [checked, setChecked] = useState(false);
+  const [startDay, setStartDay] = useState(getFullDay(0));
+  const [modalVis, setModalVis] = useState(false);
+  const [modalBGVis, setModalBGVis] = useState(false);
+  const [message, setMessage] = useState('パターンを入力してください');
+  const [status, setStatus] = useState('normal');
+  const [backgroundDefault, setBackgroundDefault] = useState('画像を選択');
+  // const [resourcePath, setResourcePath] = useState([]);
+  const [diaryData, setDiaryData] = useState(null);
+  const {BackupModule} = NativeModules;
+  const [realm, setRealm] = useState(null);
+  const [isLoading, setLoading] = useState(false);
 
   const backgroundOption = [
     {index: 0, opt: '画像を選択'},
     {index: 1, opt: '最新の画像'},
-    {index: 2, opt: '設定しない'}
+    {index: 2, opt: '設定しない'},
   ];
 
   const days = [
@@ -154,34 +170,40 @@ export default function Setting({navigation}) {
           break;
       }
     });
-    Realm.open({
-      schema: [Diary_Schema, Init_Schema], // predefined schema
-      schemaVersion: 5,
-    })
-      .then(realm => {
-        const data = realm.objects('initData');
-        if (data !== null && data.length > 0) {
-          if (data[0].usePass && data[0].password.trim() !== '') {
-            setChecked(true);
-          } else {
-            setChecked(false);
-          }
-          setStartDay(getFullDay(data[0].startDay));
-        }
-        const diary = realm.objects('diaryData').sorted('_id', true);
-        setDiaryData(diary);
-        return () => {
-          realm.close();
-        };
+    const initData = async () => {
+      await Realm.open({
+        schema: [Diary_Schema, Init_Schema], // predefined schema
+        schemaVersion: 5,
       })
-      .catch(err => {
-        console.log(err);
-      });
+        .then(realm => {
+          const data = realm.objects('initData');
+          if (data !== null && data.length > 0) {
+            if (data[0].usePass && data[0].password.trim() !== '') {
+              setChecked(true);
+            } else {
+              setChecked(false);
+            }
+            setStartDay(getFullDay(data[0].startDay));
+          }
+          const diary = realm.objects('diaryData').sorted('_id', true);
+          setDiaryData(diary);
+          setRealm(realm);
+          return () => {
+            realm.close();
+          };
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    };
+    initData();
     return () => {
+      if (realm && !realm.isClosed) {
+        realm?.close();
+      }
       ac.abort();
     };
   }, []);
-
 
   const setModalDay = item => {
     setModalVis(false);
@@ -196,9 +218,11 @@ export default function Setting({navigation}) {
       DefaultPreference.set('widgetBackgroundOpt', '1');
     } else if (item.index === 0) {
       if (diaryData !== null && diaryData.length > 0) {
-        for ( let i = 0; i < diaryData.length; i++) {
+        for (let i = 0; i < diaryData.length; i++) {
           if (diaryData[i].imageSrc !== '') {
-            let imageSrc = JSON.parse(diaryData[i].imageSrc);
+            let imageSrc = diaryData?.[i]?.imageSrc
+              ? JSON.parse(diaryData?.[i]?.imageSrc)
+              : {};
             imageSrc = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
             if (imageSrc.length > 0) {
               DefaultPreference.set('backgroundImage', imageSrc[0].uri);
@@ -222,11 +246,11 @@ export default function Setting({navigation}) {
       DefaultPreference.set('widgetBackgroundOpt', '2');
       setBackgroundDefault(item.opt);
     }
-  }
+  };
 
-  const pickPicture = async (item) => {
+  const pickPicture = async item => {
     try {
-      const result = await ImagePicker.openPicker({
+      await ImagePicker.openPicker({
         height: 300,
         width: 400,
         cropping: true,
@@ -245,7 +269,7 @@ export default function Setting({navigation}) {
             height: e.height,
           });
         });
-        
+
         setModalBGVis(false);
         setBackgroundDefault(item.opt);
         DefaultPreference.set('backgroundImage', arr[0].uri);
@@ -258,11 +282,11 @@ export default function Setting({navigation}) {
     }
   };
 
-  const alertRequestPermission = (service) => {
+  const alertRequestPermission = service => {
     const libraryString = `Imaryにはまだ「写真アルバム」アクセス権がありません。
-    写真を使用するには、写真アルバムへのアクセスを許可してください。`
+    写真を使用するには、写真アルバムへのアクセスを許可してください。`;
     const cameraString = `Imaryにはまだ「カメラ」アクセス権がありません。
-    写真とビデオ撮影機能を使用するには、カメラへのアクセスを許可してください。`
+    写真とビデオ撮影機能を使用するには、カメラへのアクセスを許可してください。`;
     Alert.alert('', service === 'library' ? libraryString : cameraString, [
       {
         text: 'キャンセル',
@@ -275,6 +299,62 @@ export default function Setting({navigation}) {
         style: 'default',
       },
     ]);
+  };
+
+  const onPressBackup = () => {
+    setLoading(true);
+    BackupModule.backupServer(
+      getListVideoName(diaryData),
+      (error, isSuccess) => {
+        setLoading(false);
+        Alert.alert(
+          'Notice',
+          isSuccess
+            ? 'バックアップが完了しました。'
+            : 'バックアップに失敗しました。',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK Pressed'),
+              style: 'default',
+            },
+          ],
+        );
+      },
+    );
+    // BackupModule.shareToFaceBook('', '', '');
+  };
+
+  const onPressRestore = async () => {
+    setLoading(true);
+    if (realm && !realm.isClosed) {
+      realm?.close();
+    }
+    const hasPermission = await hasAndroidPermission();
+
+    if (!isAndroid || hasPermission) {
+      BackupModule.restoreServer('', (error, isSuccess) => {
+        setLoading(false);
+        if (!isAndroid && isSuccess) {
+          _updateVideoPaths();
+        }
+        Alert.alert(
+          'Notice',
+          isSuccess ? '復元が完了しました。' : '復元に失敗しました。',
+          [
+            {
+              text: 'OK',
+              onPress: () => console.log('OK Pressed'),
+              style: 'default',
+            },
+          ],
+        );
+      });
+    }
+  };
+
+  const _updateVideoPaths = async () => {
+    await updateVideoPaths();
   };
 
   const itemStartDay = () => (
@@ -345,6 +425,11 @@ export default function Setting({navigation}) {
 
   return (
     <SafeAreaView style={styles.container}>
+      {isLoading && (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      )}
       {checked === true && captured === false ? (
         <View style={styles.container}>
           <PasswordGesture
@@ -386,8 +471,12 @@ export default function Setting({navigation}) {
               />
             </View>
             <View style={{width: '68%'}}>
-              <Text style={{fontSize: 16, fontFamily: 'Yu Gothic'}}>日記ロック</Text>
-              <Text style={{fontSize: 11, fontFamily: 'Yu Gothic'}}>ウィジェットはロックされません</Text>
+              <Text style={{fontSize: 16, fontFamily: 'Yu Gothic'}}>
+                日記ロック
+              </Text>
+              <Text style={{fontSize: 11, fontFamily: 'Yu Gothic'}}>
+                ウィジェットはロックされません
+              </Text>
             </View>
             <View>
               <ToggleSwitch
@@ -428,6 +517,36 @@ export default function Setting({navigation}) {
             </View>
             {itemBackground()}
           </View>
+          <TouchableOpacity
+            style={styles.bodyContainer}
+            onPress={onPressBackup}>
+            <View style={{width: '14%'}}>
+              <Image
+                source={require('../../assets/cloud.png')}
+                style={{width: 35, height: 35}}
+              />
+            </View>
+            <View style={{width: '68%'}}>
+              <Text style={{fontSize: 16, fontFamily: 'Yu Gothic'}}>
+                バックアップと復元
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.bodyContainer}
+            onPress={onPressRestore}>
+            <View style={{width: '14%'}}>
+              <Image
+                source={require('../../assets/cloud.png')}
+                style={{width: 35, height: 35}}
+              />
+            </View>
+            <View style={{width: '68%'}}>
+              <Text style={{fontSize: 16, fontFamily: 'Yu Gothic'}}>
+                リストアと復元
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
@@ -438,6 +557,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#E7E6E6',
+    paddingTop: getStatusBarHeight(),
   },
   statusBar: {
     height: StatusBar.currentHeight,
@@ -469,7 +589,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     flexDirection: 'row',
     backgroundColor: 'white',
-    height: '20%',
+    // height: '20%',
     alignItems: 'center',
   },
   moldalContainer: {
@@ -489,5 +609,15 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: '30%',
     width: '70%',
+  },
+  loadingContainer: {
+    backgroundColor: 'white',
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    width: Dimensions.get('window').width,
+    zIndex: 99,
+    justifyContent: 'center',
   },
 });

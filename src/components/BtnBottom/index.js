@@ -1,14 +1,16 @@
 import React from 'react';
-import {StyleSheet, View, Image, TouchableOpacity, Dimensions} from 'react-native';
+import {StyleSheet, View, Image, TouchableOpacity} from 'react-native';
 
 export const BottomNav = props => {
   return (
     <View style={styles.bottomNav}>
       <View style={styles.iconNav}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Calendar')} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('Calendar')}
+          activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image
@@ -19,14 +21,18 @@ export const BottomNav = props => {
         </TouchableOpacity>
       </View>
       <View style={styles.iconNav}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Search')} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('Search')}
+          activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
-            <Image source={require('../../assets/search.jpg')} 
-            style={styles.imageIcon2} />
+            <Image
+              source={require('../../assets/search.jpg')}
+              style={styles.imageIcon2}
+            />
           </View>
         </TouchableOpacity>
       </View>
@@ -39,11 +45,11 @@ export const BottomNav = props => {
                 type: 0,
                 isWrite: false,
               })
-            } 
+            }
             activeOpacity={0.7}>
             <View style={[styles.imageNav, {elevation: 13}]}>
               <Image
-                source={require('../../assets/gradient.png')}
+                source={require('../../assets/Gradient.png')}
                 style={styles.imageGadient}
               />
               <Image
@@ -53,8 +59,7 @@ export const BottomNav = props => {
             </View>
           </TouchableOpacity>
         ) : (
-          
-            <View style={styles.imageNav} />
+          <View style={styles.imageNav} />
         )}
       </View>
       <View style={styles.iconNav}>
@@ -65,11 +70,11 @@ export const BottomNav = props => {
               type: 1,
               isWrite: false,
             })
-          } 
+          }
           activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image
@@ -80,10 +85,12 @@ export const BottomNav = props => {
         </TouchableOpacity>
       </View>
       <View style={styles.iconNav}>
-        <TouchableOpacity onPress={() => props.navigation.navigate('Write')} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => props.navigation.navigate('Write')}
+          activeOpacity={0.7}>
           <View style={[styles.imageNav, {elevation: 13}]}>
             <Image
-              source={require('../../assets/gradient.png')}
+              source={require('../../assets/Gradient.png')}
               style={styles.imageGadient}
             />
             <Image
@@ -104,8 +111,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 55,
     flexDirection: 'row',
-    justifyContent:'space-around',
-    alignItems:'center',
+    justifyContent: 'space-around',
+    alignItems: 'center',
     bottom: 0,
   },
   iconNav: {
@@ -119,7 +126,7 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     marginBottom: 10,
     backgroundColor: 'transparent',
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: {
       width: 4,
       height: 4,

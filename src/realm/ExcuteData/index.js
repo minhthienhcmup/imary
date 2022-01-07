@@ -1,6 +1,12 @@
 import Realm from 'realm';
-import {getCurrentDate, getCurrentTime, getDay} from '../../realm/Common';
+import {
+  getCurrentDate,
+  getCurrentTime,
+  getDay,
+  isAndroid,
+} from '../../realm/Common';
 import DefaultPreference from 'react-native-default-preference';
+import RNFS from 'react-native-fs';
 
 const appGroupIdentifier = 'group.com.imary';
 
@@ -54,26 +60,25 @@ export const saveData = async (
   let fullDate = getCurrentDate(true) + getDay(new Date().getDay());
   let time = getCurrentTime(true);
   let id = getCurrentDate(false) + getCurrentTime(false);
-  let imageSource =
-    imageSrc !== '' ? JSON.stringify(imageSrc) : '';
+  let imageSource = imageSrc !== '' ? JSON.stringify(imageSrc) : '';
   let tagText = '';
-  tagArr.forEach(item => {
+  tagArr?.forEach(item => {
     tagText = tagText.concat(item);
   });
 
   let videoSource = video !== '' ? JSON.stringify(video) : '';
   let data = {
     _id: id,
-    fullDate: fullDate,
-    time: time,
-    content: diaryContent,
-    color: color,
-    favorite: favorite,
+    fullDate: fullDate ?? '',
+    time: time ?? '',
+    content: diaryContent ?? '',
+    color: color ?? '#F5F5F5',
+    favorite: favorite ?? false,
     day: new Date().getDate(),
-    tag: tagArr,
-    imageSrc: imageSource,
-    video: videoSource,
-    tagText: tagText,
+    tag: tagArr ?? [],
+    imageSrc: imageSource ?? '',
+    video: videoSource ?? '',
+    tagText: tagText ?? '',
     r: Math.random() * 100000,
   };
 
@@ -99,14 +104,18 @@ export const saveData = async (
   image = Array.isArray(imageSrc) ? imageSrc : [imageSrc];
   DefaultPreference.get('widgetBackgroundOpt').then(opt => {
     if (image.length > 0 && (opt === '0' || opt === undefined)) {
-      DefaultPreference.set('backgroundImage', image[0].uri);
+      DefaultPreference.set('backgroundImage', image?.[0]?.uri);
     }
-  })
+  });
   DefaultPreference.set('date', date);
+  if (!realm.isClosed) {
+    realm.close();
+  }
 };
-saveData().catch(error => {
-  console.log(`An error occurred: ${error}`);
-});
+
+// saveData().catch(error => {
+//   console.log(`An error occurred: ${error}`);
+// });
 
 export const updateData = async (id, favorite) => {
   const realm = await Realm.open({
@@ -179,9 +188,44 @@ export const deleteById = async id => {
     schema: [Diary_Schema, Init_Schema],
     schemaVersion: 5,
   });
+  let obj = realm.objectForPrimaryKey('diaryData', id);
+  let video = JSON.parse(obj?.video);
+  console.log(video);
+  if (video) {
+    video = video?.[0] ?? video;
+    deleteFile(video?.path);
+    if (!isAndroid) {
+      deleteFile(video?.sourceURL);
+    }
+  }
+
   realm.write(() => {
-    realm.delete(realm.objectForPrimaryKey('diaryData', id)); 
+    realm.delete(obj);
   });
+};
+
+const deleteFile = path => {
+  if (!path) {
+    return;
+  }
+  RNFS.exists(path)
+    .then(result => {
+      if (result) {
+        return (
+          RNFS.unlink(path)
+            .then(() => {
+              console.log('FILE DELETED');
+            })
+            // `unlink` will throw an error, if the item to unlink does not exist
+            .catch(err => {
+              console.log(err.message);
+            })
+        );
+      }
+    })
+    .catch(err => {
+      console.log(err.message);
+    });
 };
 
 export const updateListDate = async id => {
@@ -196,7 +240,7 @@ export const updateListDate = async id => {
     .filtered('_id BEGINSWITH[c] $0', id.substring(0, 8));
   if (result.length === 0) {
     let resultInit = realm.objects('initData');
-    let listDates = [...resultInit[0].listDate];
+    let listDates = [...resultInit?.[0]?.listDate];
     const index = listDates.indexOf(date);
     console.log('date ', date, index);
 
@@ -211,4 +255,36 @@ export const updateListDate = async id => {
       realm.create('initData', dataInit, true);
     });
   }
-}
+};
+
+export const updateVideoPaths = async () => {
+  const realm = await Realm.open({
+    schema: [Diary_Schema, Init_Schema],
+    schemaVersion: 5,
+  });
+  const result = realm.objects('diaryData');
+  let path = RNFS.DocumentDirectoryPath.split('/');
+  let newID = path[path.length - 2];
+  if (result) {
+    result?.map(obj => {
+      if (obj?.video && obj?.video !== '[]') {
+        let newVideo = obj.video;
+        let video = JSON.parse(obj.video)[0] ?? JSON.parse(obj.video);
+        let tempPath = video.path.split('/');
+        let oldID =
+          tempPath[tempPath.length - 4] !== newID
+            ? tempPath[tempPath.length - 4]
+            : '';
+        if (oldID !== '') {
+          newVideo = newVideo.replace(oldID, newID);
+        }
+        realm.write(() => {
+          obj.video = newVideo;
+        });
+      }
+    });
+  }
+  if (!realm.isClosed) {
+    realm.close();
+  }
+};
